@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Materials de Música · INS Ermengol IV</title>
+<style>
+:root{
+  --bg:#faf8f4; --card:#ffffff; --ink:#1f2430; --muted:#6b7280; --line:#e6e1d8;
+  --accent:#b4432b; --accent-soft:#f6e3dd; --chip:#f0ece4; --chip-on:#1f2430; --chip-on-ink:#fff;
+  --t-P:#c2410c; --t-D:#1d4ed8; --t-A:#047857; --t-F:#7c3aed;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#16181d; --card:#1e2128; --ink:#ecebe6; --muted:#9aa0ab; --line:#2f333c;
+  --accent:#f08a6e; --accent-soft:#3a2620; --chip:#272b34; --chip-on:#ecebe6; --chip-on-ink:#16181d;
+  --t-P:#fb923c; --t-D:#60a5fa; --t-A:#34d399; --t-F:#a78bfa;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+header h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
+header p{margin:0;color:var(--muted);font-family:system-ui,sans-serif;font-size:15px}
+.sans{font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.bar{margin:28px 0 14px;display:flex;gap:10px;flex-wrap:wrap}
+.bar input{flex:1 1 260px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:15px system-ui,sans-serif}
+.bar input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.bar select{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:15px system-ui,sans-serif}
+.group{margin:14px 0}
+.group h2{font:600 12px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.status{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px;font:14px system-ui,sans-serif;color:var(--muted)}
+.clear{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;text-decoration:underline}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.meta{display:flex;gap:8px;align-items:center;font:12px system-ui,sans-serif;color:var(--muted)}
+.badge{font-weight:600;padding:2px 8px;border-radius:6px;background:var(--accent-soft);color:var(--bc,var(--accent))}
+.card h3{margin:0;font-size:18px;line-height:1.25}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.jump a{font:600 13px system-ui,sans-serif;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:6px 14px;border-radius:999px}
+.jump a:hover{border-color:var(--accent);color:var(--accent)}
+.course{margin:38px 0 0;scroll-margin-top:16px}
+summary{list-style:none;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+.course>summary{font-size:28px;font-weight:700;padding:8px 0;border-bottom:2px solid var(--ink);display:flex;align-items:baseline;gap:12px}
+.course>summary::before{content:"▸";font-size:20px;color:var(--accent);transition:transform .15s;display:inline-block}
+.course[open]>summary::before{transform:rotate(90deg)}
+.course>summary small{font:13px system-ui,sans-serif;color:var(--muted);font-weight:400;margin-left:auto}
+.course>summary:hover{color:var(--accent)}
+.sub{margin:14px 0 0}
+.sub>summary{font:700 13px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px;display:flex;align-items:center;gap:8px;color:var(--bc);padding:4px 0}
+.sub>summary::before{content:"▸";transition:transform .15s;display:inline-block}
+.sub[open]>summary::before{transform:rotate(90deg)}
+.sub>summary span{color:var(--muted);font-weight:400}
+.empty{text-align:center;color:var(--muted);padding:60px 0;font-family:system-ui,sans-serif}
+footer{margin-top:50px;color:var(--muted);font:13px system-ui,sans-serif;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Materials de Música</h1>
+    <p>INS Ermengol IV · Curs 2026-27 · Presentacions, documents, fitxes i eines</p>
+  </header>
+
+  <div class="bar">
+    <input id="q" type="search" placeholder="Cerca per títol…" aria-label="Cerca">
+  </div>
+
+  <nav class="jump" id="jump" aria-label="Cursos"></nav>
+
+
+  <div class="status"><span id="count"></span><button class="clear" id="clear" hidden>Neteja filtres</button></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>Cap material coincideix amb aquests filtres.</div>
+
+  <footer>Per afegir un material nou, demana-ho a Claude i s'incorporarà a aquest catàleg.</footer>
+</div>
+
+<script>
+var BASE="https://claude.ai/artifact/";
+var TYPES={P:"Presentació",D:"Document",A:"Eina interactiva",F:"Fitxa / disseny"};
+// [títol, tipus, nivell, etiquetes, data, id]
+var DATA=[
+["El teu primer beat a Full Partituras · Pas a pas","P","Tots",["Beat","Ritme","Tecnologia musical"],"2026-11-17","JtqFP3D8wCUHJFwNNquzkC"],
+["Carta als Reis Mags i desitjos de final de curs","F","Tutoria",["Nadal"],"2026-11-17","YMWzrT5U8kF2Cv8FnXAJRC"],
+["Activitat CapCut: creem tensió al curt","P","4t ESO",["Cinema i imatge","Edició de vídeo","Banda sonora"],"2026-11-16","UnREoZSFsj6dkRXpRQnsi5"],
+["El teu primer beat a Flat · Pas a pas","P","Tots",["Beat","Ritme","Tecnologia musical"],"2026-11-16","X1XKmfo6inTvNwGMzToBWG"],
+["Plantilla: Classifiquem els vídeos","D","4t ESO",["Cinema i imatge","Avaluació"],"2026-11-16","B29WfhrBq6DKxc84yeHswv"],
+["Radiografia d'una cançó","P","2n ESO",["Cançó","Elements de la música","Rap"],"2026-11-13","9WXNsdPX9KRsiZoY43ShU3"],
+["Radiografia d'una cançó · SA2 Lliura la teva batalla","D","2n ESO",["Cançó","Rap"],"2026-11-13","GH2opVXC5QZvXffqPpzDSd"],
+["Lliura la teva batalla (eina)","A","2n ESO",["Rap","Música medieval","Escriptura musical"],"2026-11-13","KU4QxpYhcAa3phiGbfFiuD"],
+["Els elements de la música · 2n ESO","P","2n ESO",["Elements de la música"],"2026-11-12","GTfZSyuG3wXh4gFvGnTEVz"],
+["Fitxa: Busquem efectes de so (amb desplegables)","D","4t ESO",["Efectes de so","Cinema i imatge"],"2026-11-10","QebSgzXsvYnAuCR1P3wQmU"],
+["Fitxa efectes de so (editable)","F","4t ESO",["Efectes de so","Cinema i imatge"],"2026-11-09","7FjKb77eNbFw64mVgxz9qf"],
+["Fitxa efectes de so","A","4t ESO",["Efectes de so","Cinema i imatge"],"2026-11-09","V1CE9ZoNFhi5BaENpgDRfo"],
+["Fitxa so i imatge","A","4t ESO",["Efectes de so","Cinema i imatge"],"2026-11-09","QjzwUp1Cme5Nju8oQWpjxH"],
+["Mural de respostes","A","4t ESO",["Cinema i imatge"],"2026-11-09","CBbcnypL6XeV2z3hzKE3ZP"],
+["Activitat auditiva: puja o baixa? (sostingut i bemoll) – Plickers","D","Tots",["Educació auditiva","Notació"],"2026-11-08","EHvHYN3STxMHrF7MQQmNZS"],
+["La música als curts d'animació (4t ESO)","P","4t ESO",["Cinema i imatge","Curts d'animació","Banda sonora"],"2026-11-06","313qnX7v2365xnvrxi5R7n"],
+["Fitxa: Busquem efectes de so (4t ESO)","D","4t ESO",["Efectes de so","Cinema i imatge"],"2026-11-06","Y5c9Rk97uMqdHeEXsXQdSG"],
+["Fitxa: Com afecta el so a la imatge? (4t ESO)","D","4t ESO",["Efectes de so","Cinema i imatge"],"2026-11-06","6YyL5kzpUCXu8rmirsuZwy"],
+["Dossier 4t ESO: la música als curts d'animació (10 sessions)","D","4t ESO",["Curts d'animació","Cinema i imatge","Banda sonora"],"2026-11-06","FKXfcv99fpA4a8VkuBn1Ep"],
+["Test previ al repte final: La música i la imatge (1r ESO)","D","1r ESO",["Cinema i imatge","Avaluació"],"2026-11-06","7Q9CY1xCi299WcpUzxzwas"],
+["La música als curts d'animació: la nostra nadalenca","P","4t ESO",["Nadal","Curts d'animació","Cinema i imatge"],"2026-11-06","3jo1AqX3frPjaMSQME2sDi"],
+["La música i la imatge: escriure música i sonoritzar un curt","P","1r ESO",["Cinema i imatge","Escriptura musical","Banda sonora"],"2026-11-06","WExnxLpaHShjxMRaJTUAFL"],
+["Tema 3. Els paràmetres del so + Descobreix la banda sonora","P","1r ESO",["Paràmetres del so","Banda sonora"],"2026-11-06","Y6EhFAaKPe54CD4ABmy5Vu"],
+["Activitat 1r ESO: Les notes i les línies addicionals","D","1r ESO",["Notació","Escriptura musical"],"2026-11-06","3mfAmQnMrESPLYZiXhSzi8"],
+["Dossier 4t ESO: la música als curts d'animació i la nadalenca en stop motion","D","4t ESO",["Nadal","Curts d'animació","Cinema i imatge"],"2026-11-06","UbCivAqzuJwq9CfYAzqHe5"],
+["Projecte de Nadal: nadalenca per a un stop motion de 30 s","D","4t ESO",["Nadal","Curts d'animació"],"2026-11-06","4g3NuJ9pVo9DAQGS1hPKmM"],
+["Activitat: El videoclip de la nadalenca (4t ESO)","D","4t ESO",["Nadal","Cinema i imatge"],"2026-11-04","JAeXAvAt1ca5jgstsLbHCq"],
+["Programació anual de Música · 1r ESO","D","1r ESO",["Programació"],"2026-11-02","3u9yZ2eL5FKNBmqYTBdcXG"],
+["Lliura la teva batalla · 2n ESO","P","2n ESO",["Rap","Música medieval","Escriptura musical"],"2026-11-01","2td1me2rhtbLkUVNXNss9F"],
+["La Mansió Encantada de 2n C — Tutoria de Halloween","D","Tutoria",["Tutoria"],"2026-10-29","1u8LUhGZFpiT9K2dMcfoZ8"],
+["La Mansió Encantada de 2n C (joc)","A","Tutoria",["Tutoria"],"2026-10-29","QhvMTp6uvKjDidZV6kJwba"],
+["Missió: el codi dels monjos","P","2n ESO",["Música medieval","Escriptura musical"],"2026-10-28","PwVG2AgGoSQbSuFbTqwiUn"],
+["Escalfament de làmines","A","4t ESO",["Làmines","Ritme","Don't Worry Be Happy"],"2026-10-27","T1miydd7QUiyemNABeVMrL"],
+["When the Saints para láminas","A","Tots",["Làmines","Cançó"],"2026-10-27","VnFebUtTLMEVp82eM1k43X"],
+["Quadern de música adaptat","F","2n ESO",["Material adaptat"],"2026-10-25","XKS6GUVgswEhvZTEATwWpy"],
+["Dossier adaptat de música – 2n ESO","D","2n ESO",["Material adaptat"],"2026-10-25","CnTqsL97idCzQ7Js72FPeS"],
+["El nostre karaoke: versió 4t ESO (optativa)","D","4t ESO",["Karaoke","Cançó"],"2026-10-22","TndLZ2Ue9SaeeqcgZc5WkN"],
+["El nostre karaoke 4t ESO: material de les sessions","D","4t ESO",["Karaoke","Cançó"],"2026-10-22","NRi7wT78ZmZmuJiDgyXgDi"],
+["Rúbrica d'avaluació: El nostre karaoke","D","2n ESO",["Karaoke","Avaluació"],"2026-10-22","VBwCGQStcQ5JRQ95wuvVn5"],
+["Assaig de Jingle Bells","A","Tots",["Nadal","Cançó"],"2026-10-22","XpAXRgKqNqPBhVZiZCdNKQ"],
+["Reproductor del festival","A","Tots",["Nadal","Festival"],"2026-10-21","1Tc1LP78Hd2eiTbTKuEPy4"],
+["Dossier de música – 2n ESO (1r trimestre)","D","2n ESO",["Programació","Karaoke","Oda a l'alegria"],"2026-10-20","NqzFd7geQ68ajvBD7ELiKd"],
+["Fitxa de la parella: El nostre karaoke","D","2n ESO",["Karaoke","Avaluació"],"2026-10-20","WDtRFLjuVwThmZ4dpvYwJD"],
+["Tasca final 2n ESO: El nostre karaoke","D","2n ESO",["Karaoke","Cançó"],"2026-10-16","WUA15JyjLfh3yqQHg2ahuR"],
+["El nostre karaoke pas a pas","P","2n ESO",["Karaoke","Cançó"],"2026-10-16","CYWT2isB5zdc5fExZuSgjp"],
+["Notes de Be Happy","A","4t ESO",["Don't Worry Be Happy","Notació"],"2026-10-15","NEjVAcYmakuQcBmj6H4WqE"],
+["Assaig de Be Happy","A","4t ESO",["Don't Worry Be Happy","Cançó"],"2026-10-15","XYAQcCHFrsUWzoXRs8i3Pz"],
+["Ritme de Be Happy","A","4t ESO",["Don't Worry Be Happy","Ritme","Percussió corporal","Ukulele","Làmines"],"2026-10-14","TKYYTUx2o6QgHji3K3ij2S"],
+["Oda sencera al ritme","A","2n ESO",["Oda a l'alegria","Ritme","Làmines","Ukulele","Percussió corporal"],"2026-10-14","WsdhCq3LSGbZeezF94rqAn"],
+["Ritme de l'Oda","A","2n ESO",["Oda a l'alegria","Ritme","Ukulele","Percussió corporal"],"2026-10-14","GVr1VAbZZSmtERkLJjKbv4"],
+["Arranjament «Oda a l'alegria» (versió pop) — 2n ESO","D","2n ESO",["Oda a l'alegria","Cançó"],"2026-10-14","CVMNPGWquqPsCUtHjQKUac"],
+["Seqüència didàctica · Don't Worry Be Happy (4t ESO)","D","4t ESO",["Don't Worry Be Happy","Programació"],"2026-10-13","WEQmjs8YoQ82eNSzQN6ezo"],
+["Be Happy en el aula — arreglo fácil por capas (4º ESO)","D","4t ESO",["Don't Worry Be Happy","Cançó"],"2026-10-13","MeFS9AydbNX7gHEZmGLeg2"],
+["Millor cartell publicitari","A","4t ESO",["Movida madrileña"],"2026-10-13","9gPv7r74BKDocPqd7rCP5M"],
+["Herois contra el soroll","P","1r ESO",["Contaminació acústica"],"2026-10-09","Pw1TTmBDpp4m419gDo919b"],
+["Plantilla còmic · Herois contra el soroll","F","1r ESO",["Contaminació acústica"],"2026-10-09","PNmSUXn14z5Wq3XGVR87KU"],
+["Resultats cartells Movida (puntuació)","A","4t ESO",["Movida madrileña"],"2026-10-06","NnADMtALY5hsbrH6aTwPE6"],
+["Resultats cartells Movida Madrileña","A","4t ESO",["Movida madrileña"],"2026-10-06","6SmHzWYawRZR7D3offoKck"],
+["Resultados carteles Movida Madrileña","A","4t ESO",["Movida madrileña"],"2026-10-06","MegwTssvuEobGK9Fnx7Tfx"],
+["Enquesta: música, IA i drets d'autor","A","4t ESO",["IA i música","Drets d'autor"],"2026-10-06","TmFPzd8XUP2UGYJR4EK1NB"],
+["Enquesta: música, IA i drets d'autor (versió 2)","A","4t ESO",["IA i música","Drets d'autor"],"2026-10-06","QHpS1mJWBzK1e4z6ShCfjj"],
+["Contesta l'enquesta · La música del futur","A","4t ESO",["IA i música","Drets d'autor"],"2026-10-06","T8aztsw3TELwGPGKHJ6Com"],
+["Dossier del professor · La música del futur","A","4t ESO",["IA i música"],"2026-10-06","SM7HarUZBZ66U16pfqoETi"],
+["Reunió famílies 2n ESO C","P","Tutoria",["Tutoria"],"2026-10-06","N438kAGZUt2LUrR113bZLs"],
+["Enquesta en directe","A","Tots",["Tutoria"],"2026-10-05","5VrnDWUPvFPkqvWHzrMNSk"]
+];
+
+var COURSES=[
+ {id:"1r",title:"1r ESO",levels:["1r ESO"]},
+ {id:"2n",title:"2n ESO",levels:["2n ESO"]},
+ {id:"4t",title:"Optativa 4t ESO",levels:["4t ESO"]},
+ {id:"altres",title:"Tutoria i materials transversals",levels:["Tutoria","Tots"]}
+];
+var SUBS=[
+ {title:"Presentacions",types:["P"],color:"var(--t-P)"},
+ {title:"Eines interactives",types:["A"],color:"var(--t-A)"},
+ {title:"Documents i fitxes",types:["D","F"],color:"var(--t-D)"}
+];
+var state={q:""};
+var openCourses=new Set(),closedSubs=new Set();
+var $=function(id){return document.getElementById(id)};
+function uniq(a){return Array.from(new Set(a))}
+
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
+
+
+function fmt(d){var p=d.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
+
+function render(){
+  var q=norm(state.q.trim());
+  var res=DATA.filter(function(d){
+    if(q&&norm(d[0]).indexOf(q)<0)return false;
+    return true;
+  });
+  var g=$("grid");g.innerHTML="";g.className="";
+  var jump=$("jump");jump.innerHTML="";
+  var filtering=!!state.q.trim();
+  COURSES.forEach(function(c){
+    var inCourse=res.filter(function(d){return c.levels.indexOf(d[2])>-1});
+    if(!inCourse.length)return;
+    var sec=document.createElement("details");sec.className="course";sec.id=c.id;
+    sec.open=filtering||openCourses.has(c.id);
+    sec.addEventListener("toggle",function(){if(filtering)return;sec.open?openCourses.add(c.id):openCourses.delete(c.id)});
+    var h=document.createElement("summary");h.textContent=c.title;
+    var sm=document.createElement("small");sm.textContent=inCourse.length+" materials";h.appendChild(sm);
+    sec.appendChild(h);
+    var ja=document.createElement("a");ja.href="#"+c.id;ja.textContent=c.title+" ("+inCourse.length+")";
+    ja.addEventListener("click",function(){openCourses.add(c.id);sec.open=true});
+    jump.appendChild(ja);
+    SUBS.forEach(function(s){
+      var items=inCourse.filter(function(d){return s.types.indexOf(d[1])>-1});
+      if(!items.length)return;
+      var sub=document.createElement("details");sub.className="sub";sub.style.setProperty("--bc",s.color);
+      var sk=c.id+"|"+s.title;sub.open=!closedSubs.has(sk);
+      sub.addEventListener("toggle",function(){sub.open?closedSubs.delete(sk):closedSubs.add(sk)});
+      var h3=document.createElement("summary");h3.textContent=s.title+" ";
+      var n=document.createElement("span");n.textContent="· "+items.length;h3.appendChild(n);
+      var grid=document.createElement("div");grid.className="grid";
+      items.forEach(function(d){grid.appendChild(card(d))});
+      sub.appendChild(h3);sub.appendChild(grid);sec.appendChild(sub);
+    });
+    g.appendChild(sec);
+  });
+  $("count").textContent=res.length+" de "+DATA.length+" materials";
+  $("empty").hidden=res.length>0;
+  $("clear").hidden=!state.q;
+}
+
+function card(d){
+    var a=document.createElement("a");a.className="card";a.href=BASE+d[5];a.target="_blank";a.rel="noopener";
+    var m=document.createElement("div");m.className="meta";
+    var b=document.createElement("span");b.className="badge";b.textContent=TYPES[d[1]];b.style.setProperty("--bc","var(--t-"+d[1]+")");
+    var l=document.createElement("span");l.textContent=d[2]+" · "+fmt(d[4]);
+    m.appendChild(b);m.appendChild(l);
+    var h=document.createElement("h3");h.textContent=d[0];
+    a.appendChild(m);a.appendChild(h);return a;
+}
+
+$("q").addEventListener("input",function(e){state.q=e.target.value;render()});
+$("clear").addEventListener("click",function(){
+  state={q:""};
+  $("q").value="";render();
+});
+render();
+</script>
+</body>
+</html>
