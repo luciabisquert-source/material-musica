@@ -4,83 +4,85 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Materials de Música · INS Ermengol IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#faf8f4; --card:#ffffff; --ink:#1f2430; --muted:#6b7280; --line:#e6e1d8;
-  --accent:#b4432b; --accent-soft:#f6e3dd; --chip:#f0ece4; --chip-on:#1f2430; --chip-on-ink:#fff;
-  --t-P:#c2410c; --t-D:#1d4ed8; --t-A:#047857; --t-F:#7c3aed;
+  --bg:#f4f1fb; --card:#fff; --ink:#1c1b29; --muted:#6a6880; --line:#e4e0f0;
+  --purple:#7d2ae8; --teal:#00c4cc; --pink:#ff5c8a; --yellow:#ffb800;
+  --cP:#7d2ae8; --cA:#00a8b0; --cD:#ff5c8a;
+  --shadow:0 4px 18px rgba(80,40,160,.10);
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#16181d; --card:#1e2128; --ink:#ecebe6; --muted:#9aa0ab; --line:#2f333c;
-  --accent:#f08a6e; --accent-soft:#3a2620; --chip:#272b34; --chip-on:#ecebe6; --chip-on-ink:#16181d;
-  --t-P:#fb923c; --t-D:#60a5fa; --t-A:#34d399; --t-F:#a78bfa;}
+  :root{--bg:#14121f; --card:#1f1c2e; --ink:#f1eefc; --muted:#a39fc0; --line:#322e47;
+  --cP:#a66bff; --cA:#25d3da; --cD:#ff7da3; --shadow:0 4px 18px rgba(0,0,0,.35)}
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}
-.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
-header h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
-header p{margin:0;color:var(--muted);font-family:system-ui,sans-serif;font-size:15px}
-.sans{font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-.bar{margin:28px 0 14px;display:flex;gap:10px;flex-wrap:wrap}
-.bar input{flex:1 1 260px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:15px system-ui,sans-serif}
-.bar input:focus{outline:2px solid var(--accent);outline-offset:1px}
-.bar select{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:15px system-ui,sans-serif}
-.group{margin:14px 0}
-.group h2{font:600 12px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
-.status{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px;font:14px system-ui,sans-serif;color:var(--muted)}
-.clear{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;text-decoration:underline}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
-.card{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
-.card:hover{transform:translateY(-2px);border-color:var(--accent)}
-.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.meta{display:flex;gap:8px;align-items:center;font:12px system-ui,sans-serif;color:var(--muted)}
-.badge{font-weight:600;padding:2px 8px;border-radius:6px;background:var(--accent-soft);color:var(--bc,var(--accent))}
-.card h3{margin:0;font-size:18px;line-height:1.25}
-.jump{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
-.jump a{font:600 13px system-ui,sans-serif;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:6px 14px;border-radius:999px}
-.jump a:hover{border-color:var(--accent);color:var(--accent)}
-.course{margin:38px 0 0;scroll-margin-top:16px}
-summary{list-style:none;cursor:pointer}
-summary::-webkit-details-marker{display:none}
-.course>summary{font-size:28px;font-weight:700;padding:8px 0;border-bottom:2px solid var(--ink);display:flex;align-items:baseline;gap:12px}
-.course>summary::before{content:"▸";font-size:20px;color:var(--accent);transition:transform .15s;display:inline-block}
-.course[open]>summary::before{transform:rotate(90deg)}
-.course>summary small{font:13px system-ui,sans-serif;color:var(--muted);font-weight:400;margin-left:auto}
-.course>summary:hover{color:var(--accent)}
-.sub{margin:14px 0 0}
-.sub>summary{font:700 13px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px;display:flex;align-items:center;gap:8px;color:var(--bc);padding:4px 0}
-.sub>summary::before{content:"▸";transition:transform .15s;display:inline-block}
-.sub[open]>summary::before{transform:rotate(90deg)}
-.sub>summary span{color:var(--muted);font-weight:400}
-.empty{text-align:center;color:var(--muted);padding:60px 0;font-family:system-ui,sans-serif}
-footer{margin-top:50px;color:var(--muted);font:13px system-ui,sans-serif;text-align:center}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Poppins',system-ui,-apple-system,Segoe UI,sans-serif}
+.hero{background:linear-gradient(120deg,#7d2ae8 0%,#5b5cf0 45%,#00c4cc 100%);color:#fff;padding:44px 20px 78px;position:relative;overflow:hidden}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.10)}
+.hero::before{width:260px;height:260px;right:-60px;top:-90px}
+.hero::after{width:150px;height:150px;left:42%;bottom:-80px}
+.hero .in{max-width:1080px;margin:0 auto;position:relative;z-index:1}
+.hero h1{margin:0;font-size:clamp(28px,5.5vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.hero p{margin:8px 0 0;opacity:.9;font-weight:500}
+.search{margin-top:22px;max-width:460px;position:relative}
+.search input{width:100%;padding:13px 18px 13px 44px;border:0;border-radius:999px;font:500 15px 'Poppins',sans-serif;color:#1c1b29;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.search input:focus{outline:3px solid rgba(255,255,255,.6)}
+.search span{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:16px}
+.wrap{max-width:1080px;margin:-44px auto 0;padding:0 20px 70px;position:relative;z-index:2}
+.panel{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:10px 10px 26px}
+[role=tablist]{display:flex;gap:6px;flex-wrap:wrap}
+.courses{padding:6px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.ctab{flex:1 1 150px;border:0;background:transparent;color:var(--muted);font:700 15px 'Poppins',sans-serif;padding:14px 12px;border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,color .15s}
+.ctab:hover{background:var(--bg);color:var(--ink)}
+.ctab[aria-selected=true]{background:linear-gradient(120deg,#7d2ae8,#5b5cf0);color:#fff;box-shadow:0 6px 14px rgba(125,42,232,.35)}
+.ctab .n{font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:rgba(125,42,232,.12);color:var(--purple)}
+.ctab[aria-selected=true] .n{background:rgba(255,255,255,.25);color:#fff}
+.ctab:disabled{opacity:.35;cursor:default}
+.types{padding:4px 12px 0;margin-bottom:6px}
+.ttab{border:2px solid var(--line);background:transparent;color:var(--muted);font:600 14px 'Poppins',sans-serif;padding:8px 16px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:7px}
+.ttab:hover{border-color:var(--c)}
+.ttab[aria-selected=true]{background:var(--c);border-color:var(--c);color:#fff}
+.ttab .n{font-size:12px;opacity:.85}
+.ttab:disabled{opacity:.35;cursor:default}
+.ttab:disabled:hover{border-color:var(--line)}
+.status{padding:10px 22px 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between}
+.clear{background:none;border:0;color:var(--purple);font:600 13px 'Poppins',sans-serif;cursor:pointer;text-decoration:underline}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;padding:14px 12px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(80,40,160,.18)}
+.card:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+.thumb{height:84px;display:flex;align-items:center;justify-content:center;font-size:38px;background:linear-gradient(135deg,var(--c),var(--c2))}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body h3{margin:0;font-size:15.5px;font-weight:600;line-height:1.3}
+.meta{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.open{font-weight:700;color:var(--c)}
+.empty{text-align:center;color:var(--muted);padding:56px 0 20px}
+footer{margin-top:30px;text-align:center;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Materials de Música</h1>
-    <p>INS Ermengol IV · Curs 2026-27 · Presentacions, documents, fitxes i eines</p>
-  </header>
+<header class="hero"><div class="in">
+  <h1>Materials de Música 🎵</h1>
+  <p>INS Ermengol IV · Curs 2026-27</p>
+  <div class="search"><span>🔍</span><input id="q" type="search" placeholder="Cerca un material…" aria-label="Cerca"></div>
+</div></header>
 
-  <div class="bar">
-    <input id="q" type="search" placeholder="Cerca per títol…" aria-label="Cerca">
+<main class="wrap">
+  <div class="panel">
+    <div class="courses" id="courses" role="tablist" aria-label="Cursos"></div>
+    <div class="types" id="types" role="tablist" aria-label="Tipus de material"></div>
+    <div class="status"><span id="count"></span><button class="clear" id="clear" hidden>Neteja la cerca</button></div>
+    <div class="grid" id="grid" role="tabpanel"></div>
+    <div class="empty" id="empty" hidden>Cap material coincideix amb la cerca.</div>
   </div>
-
-  <nav class="jump" id="jump" aria-label="Cursos"></nav>
-
-
-  <div class="status"><span id="count"></span><button class="clear" id="clear" hidden>Neteja filtres</button></div>
-  <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" hidden>Cap material coincideix amb aquests filtres.</div>
-
   <footer>Per afegir un material nou, demana-ho a Claude i s'incorporarà a aquest catàleg.</footer>
-</div>
+</main>
 
 <script>
 var BASE="https://claude.ai/artifact/";
-var TYPES={P:"Presentació",D:"Document",A:"Eina interactiva",F:"Fitxa / disseny"};
-// [títol, tipus, nivell, etiquetes, data, id]
 var DATA=[
 ["El teu primer beat a Full Partituras · Pas a pas","P","Tots",["Beat","Ritme","Tecnologia musical"],"2026-11-17","JtqFP3D8wCUHJFwNNquzkC"],
 ["Carta als Reis Mags i desitjos de final de curs","F","Tutoria",["Nadal"],"2026-11-17","YMWzrT5U8kF2Cv8FnXAJRC"],
@@ -148,84 +150,105 @@ var DATA=[
 ["Reunió famílies 2n ESO C","P","Tutoria",["Tutoria"],"2026-10-06","N438kAGZUt2LUrR113bZLs"],
 ["Enquesta en directe","A","Tots",["Tutoria"],"2026-10-05","5VrnDWUPvFPkqvWHzrMNSk"]
 ];
-
 var COURSES=[
- {id:"1r",title:"1r ESO",levels:["1r ESO"]},
- {id:"2n",title:"2n ESO",levels:["2n ESO"]},
- {id:"4t",title:"Optativa 4t ESO",levels:["4t ESO"]},
- {id:"altres",title:"Tutoria i materials transversals",levels:["Tutoria","Tots"]}
+ {id:"1r",title:"1r ESO",icon:"🎹",levels:["1r ESO"]},
+ {id:"2n",title:"2n ESO",icon:"🎤",levels:["2n ESO"]},
+ {id:"4t",title:"Optativa 4t ESO",icon:"🎬",levels:["4t ESO"]},
+ {id:"altres",title:"Tutoria i transversals",icon:"⭐",levels:["Tutoria","Tots"]}
 ];
 var SUBS=[
- {title:"Presentacions",types:["P"],color:"var(--t-P)"},
- {title:"Eines interactives",types:["A"],color:"var(--t-A)"},
- {title:"Documents i fitxes",types:["D","F"],color:"var(--t-D)"}
+ {id:"presentacions",title:"Presentacions",icon:"📽️",types:["P"],c:"var(--cP)"},
+ {id:"eines",title:"Eines interactives",icon:"🎮",types:["A"],c:"var(--cA)"},
+ {id:"documents",title:"Documents i fitxes",icon:"📄",types:["D","F"],c:"var(--cD)"}
 ];
-var state={q:""};
-var openCourses=new Set(),closedSubs=new Set();
+var TYPEINFO={P:{icon:"📽️",c:"var(--cP)",c2:"#5b5cf0",label:"Presentació"},
+ A:{icon:"🎮",c:"var(--cA)",c2:"#00c4cc",label:"Eina interactiva"},
+ D:{icon:"📄",c:"var(--cD)",c2:"#ffb800",label:"Document"},
+ F:{icon:"🎨",c:"var(--cD)",c2:"#ffb800",label:"Fitxa"}};
+var state={q:"",course:null,sub:null};
 var $=function(id){return document.getElementById(id)};
-function uniq(a){return Array.from(new Set(a))}
-
 function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
-
-
 function fmt(d){var p=d.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
 
-function render(){
+function filtered(){
   var q=norm(state.q.trim());
-  var res=DATA.filter(function(d){
-    if(q&&norm(d[0]).indexOf(q)<0)return false;
-    return true;
-  });
-  var g=$("grid");g.innerHTML="";g.className="";
-  var jump=$("jump");jump.innerHTML="";
-  var filtering=!!state.q.trim();
+  return DATA.filter(function(d){return !q||norm(d[0]).indexOf(q)>-1});
+}
+function inCourse(res,c){return res.filter(function(d){return c.levels.indexOf(d[2])>-1})}
+function inSub(items,s){return items.filter(function(d){return s.types.indexOf(d[1])>-1})}
+
+function fromHash(){
+  var h=location.hash.slice(1).split("-");
+  if(h.length===2){
+    var c=COURSES.filter(function(x){return x.id===h[0]})[0],s=SUBS.filter(function(x){return x.id===h[1]})[0];
+    if(c&&s){state.course=c.id;state.sub=s.id}
+  }
+}
+function setHash(){try{history.replaceState(null,"","#"+state.course+"-"+state.sub)}catch(e){location.hash=state.course+"-"+state.sub}}
+
+function render(){
+  var res=filtered();
+  // choose valid course
+  var cur=COURSES.filter(function(c){return c.id===state.course})[0];
+  if(!cur||!inCourse(res,cur).length){
+    cur=COURSES.filter(function(c){return inCourse(res,c).length})[0]||COURSES[0];
+    state.course=cur.id;
+  }
+  var cItems=inCourse(res,cur);
+  var sub=SUBS.filter(function(s){return s.id===state.sub})[0];
+  if(!sub||!inSub(cItems,sub).length){
+    sub=SUBS.filter(function(s){return inSub(cItems,s).length})[0]||SUBS[0];
+    state.sub=sub.id;
+  }
+
+  var ct=$("courses");ct.innerHTML="";
   COURSES.forEach(function(c){
-    var inCourse=res.filter(function(d){return c.levels.indexOf(d[2])>-1});
-    if(!inCourse.length)return;
-    var sec=document.createElement("details");sec.className="course";sec.id=c.id;
-    sec.open=filtering||openCourses.has(c.id);
-    sec.addEventListener("toggle",function(){if(filtering)return;sec.open?openCourses.add(c.id):openCourses.delete(c.id)});
-    var h=document.createElement("summary");h.textContent=c.title;
-    var sm=document.createElement("small");sm.textContent=inCourse.length+" materials";h.appendChild(sm);
-    sec.appendChild(h);
-    var ja=document.createElement("a");ja.href="#"+c.id;ja.textContent=c.title+" ("+inCourse.length+")";
-    ja.addEventListener("click",function(){openCourses.add(c.id);sec.open=true});
-    jump.appendChild(ja);
-    SUBS.forEach(function(s){
-      var items=inCourse.filter(function(d){return s.types.indexOf(d[1])>-1});
-      if(!items.length)return;
-      var sub=document.createElement("details");sub.className="sub";sub.style.setProperty("--bc",s.color);
-      var sk=c.id+"|"+s.title;sub.open=!closedSubs.has(sk);
-      sub.addEventListener("toggle",function(){sub.open?closedSubs.delete(sk):closedSubs.add(sk)});
-      var h3=document.createElement("summary");h3.textContent=s.title+" ";
-      var n=document.createElement("span");n.textContent="· "+items.length;h3.appendChild(n);
-      var grid=document.createElement("div");grid.className="grid";
-      items.forEach(function(d){grid.appendChild(card(d))});
-      sub.appendChild(h3);sub.appendChild(grid);sec.appendChild(sub);
-    });
-    g.appendChild(sec);
+    var n=inCourse(res,c).length;
+    var b=document.createElement("button");b.type="button";b.className="ctab";b.setAttribute("role","tab");
+    b.setAttribute("aria-selected",c.id===cur.id);b.disabled=!n;
+    b.innerHTML=c.icon+" <span></span> <span class='n'>"+n+"</span>";b.children[0].textContent=c.title;
+    b.onclick=function(){state.course=c.id;render()};
+    ct.appendChild(b);
   });
-  $("count").textContent=res.length+" de "+DATA.length+" materials";
+
+  var tt=$("types");tt.innerHTML="";
+  SUBS.forEach(function(s){
+    var n=inSub(cItems,s).length;
+    var b=document.createElement("button");b.type="button";b.className="ttab";b.setAttribute("role","tab");
+    b.style.setProperty("--c",s.c);b.setAttribute("aria-selected",s.id===sub.id);b.disabled=!n;
+    b.innerHTML=s.icon+" <span></span> <span class='n'>"+n+"</span>";b.children[0].textContent=s.title;
+    b.onclick=function(){state.sub=s.id;render()};
+    tt.appendChild(b);
+  });
+
+  var items=inSub(cItems,sub);
+  var g=$("grid");g.innerHTML="";
+  items.forEach(function(d){g.appendChild(card(d))});
+  $("count").textContent=items.length+" materials · "+cur.title+" › "+sub.title;
   $("empty").hidden=res.length>0;
+  $("grid").hidden=res.length===0;
   $("clear").hidden=!state.q;
+  setHash();
 }
 
 function card(d){
-    var a=document.createElement("a");a.className="card";a.href=BASE+d[5];a.target="_blank";a.rel="noopener";
-    var m=document.createElement("div");m.className="meta";
-    var b=document.createElement("span");b.className="badge";b.textContent=TYPES[d[1]];b.style.setProperty("--bc","var(--t-"+d[1]+")");
-    var l=document.createElement("span");l.textContent=d[2]+" · "+fmt(d[4]);
-    m.appendChild(b);m.appendChild(l);
-    var h=document.createElement("h3");h.textContent=d[0];
-    a.appendChild(m);a.appendChild(h);return a;
+  var t=TYPEINFO[d[1]];
+  var a=document.createElement("a");a.className="card";a.href=BASE+d[5];a.target="_blank";a.rel="noopener";
+  a.style.setProperty("--c",t.c);a.style.setProperty("--c2",t.c2);
+  var th=document.createElement("div");th.className="thumb";th.textContent=t.icon;
+  var b=document.createElement("div");b.className="body";
+  var h=document.createElement("h3");h.textContent=d[0];
+  var m=document.createElement("div");m.className="meta";
+  var l=document.createElement("span");l.textContent=t.label+" · "+fmt(d[4]);
+  var o=document.createElement("span");o.className="open";o.textContent="Obrir ↗";
+  m.appendChild(l);m.appendChild(o);b.appendChild(h);b.appendChild(m);
+  a.appendChild(th);a.appendChild(b);return a;
 }
 
 $("q").addEventListener("input",function(e){state.q=e.target.value;render()});
-$("clear").addEventListener("click",function(){
-  state={q:""};
-  $("q").value="";render();
-});
-render();
+$("clear").addEventListener("click",function(){state.q="";$("q").value="";render()});
+window.addEventListener("hashchange",function(){fromHash();render()});
+fromHash();render();
 </script>
 </body>
 </html>
