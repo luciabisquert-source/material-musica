@@ -156,6 +156,10 @@ var COURSES=[
  {id:"1r",title:"1r ESO",icon:"🎹",levels:["1r ESO"]},
  {id:"2n",title:"2n ESO",icon:"🎤",levels:["2n ESO"]},
  {id:"4t",title:"Optativa 4t ESO",icon:"🎬",levels:["4t ESO"]},
+ {id:"practica",title:"Pràctica instrumental",icon:"🥁",always:true,levels:["Pràctica N1","Pràctica N2","Pràctica N3"],subs:[
+  {id:"n1",title:"Nivell 1",icon:"🟢",levels:["Pràctica N1"],c:"#22c55e"},
+  {id:"n2",title:"Nivell 2",icon:"🟡",levels:["Pràctica N2"],c:"#f59e0b"},
+  {id:"n3",title:"Nivell 3",icon:"🔴",levels:["Pràctica N3"],c:"#ef4444"}]},
  {id:"altres",title:"Tutoria i transversals",icon:"⭐",levels:["Tutoria","Tots"]}
 ];
 var SUBS=[
@@ -177,12 +181,13 @@ function filtered(){
   return DATA.filter(function(d){return !q||norm(d[0]).indexOf(q)>-1});
 }
 function inCourse(res,c){return res.filter(function(d){return c.levels.indexOf(d[2])>-1})}
-function inSub(items,s){return items.filter(function(d){return s.types.indexOf(d[1])>-1})}
+function inSub(items,s){return items.filter(function(d){return s.levels?s.levels.indexOf(d[2])>-1:s.types.indexOf(d[1])>-1})}
+function subsOf(c){return c.subs||SUBS}
 
 function fromHash(){
   var h=location.hash.slice(1).split("-");
   if(h.length===2){
-    var c=COURSES.filter(function(x){return x.id===h[0]})[0],s=SUBS.filter(function(x){return x.id===h[1]})[0];
+    var c=COURSES.filter(function(x){return x.id===h[0]})[0],s=c&&subsOf(c).filter(function(x){return x.id===h[1]})[0];
     if(c&&s){state.course=c.id;state.sub=s.id}
   }
 }
@@ -192,14 +197,15 @@ function render(){
   var res=filtered();
   // choose valid course
   var cur=COURSES.filter(function(c){return c.id===state.course})[0];
-  if(!cur||!inCourse(res,cur).length){
+  if(!cur||(!cur.always&&!inCourse(res,cur).length)){
     cur=COURSES.filter(function(c){return inCourse(res,c).length})[0]||COURSES[0];
     state.course=cur.id;
   }
   var cItems=inCourse(res,cur);
-  var sub=SUBS.filter(function(s){return s.id===state.sub})[0];
-  if(!sub||!inSub(cItems,sub).length){
-    sub=SUBS.filter(function(s){return inSub(cItems,s).length})[0]||SUBS[0];
+  var SS=subsOf(cur);
+  var sub=SS.filter(function(s){return s.id===state.sub})[0];
+  if(!sub||(!cur.always&&!inSub(cItems,sub).length)){
+    sub=SS.filter(function(s){return inSub(cItems,s).length})[0]||SS[0];
     state.sub=sub.id;
   }
 
@@ -207,17 +213,17 @@ function render(){
   COURSES.forEach(function(c){
     var n=inCourse(res,c).length;
     var b=document.createElement("button");b.type="button";b.className="ctab";b.setAttribute("role","tab");
-    b.setAttribute("aria-selected",c.id===cur.id);b.disabled=!n;
+    b.setAttribute("aria-selected",c.id===cur.id);b.disabled=!n&&!c.always;
     b.innerHTML=c.icon+" <span></span> <span class='n'>"+n+"</span>";b.children[0].textContent=c.title;
     b.onclick=function(){state.course=c.id;render()};
     ct.appendChild(b);
   });
 
   var tt=$("types");tt.innerHTML="";
-  SUBS.forEach(function(s){
+  SS.forEach(function(s){
     var n=inSub(cItems,s).length;
     var b=document.createElement("button");b.type="button";b.className="ttab";b.setAttribute("role","tab");
-    b.style.setProperty("--c",s.c);b.setAttribute("aria-selected",s.id===sub.id);b.disabled=!n;
+    b.style.setProperty("--c",s.c);b.setAttribute("aria-selected",s.id===sub.id);b.disabled=!n&&!cur.always;
     b.innerHTML=s.icon+" <span></span> <span class='n'>"+n+"</span>";b.children[0].textContent=s.title;
     b.onclick=function(){state.sub=s.id;render()};
     tt.appendChild(b);
@@ -226,9 +232,9 @@ function render(){
   var items=inSub(cItems,sub);
   var g=$("grid");g.innerHTML="";
   items.forEach(function(d){g.appendChild(card(d))});
-  $("count").textContent=items.length+" materials · "+cur.title+" › "+sub.title;
-  $("empty").hidden=res.length>0;
-  $("grid").hidden=res.length===0;
+  $("count").textContent=(items.length?items.length+" materials":"Carpeta buida: encara no hi ha materials")+" · "+cur.title+" › "+sub.title;
+  $("empty").hidden=res.length>0||cur.always;
+  $("grid").hidden=res.length===0&&!cur.always;
   $("clear").hidden=!state.q;
   setHash();
 }
