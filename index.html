@@ -213,7 +213,7 @@ function render(){
     var n=inCourse(res,c).length;
     var b=document.createElement("button");b.type="button";b.className="ctab";b.setAttribute("role","tab");
     b.setAttribute("aria-selected",c.id===cur.id);b.disabled=!n&&!c.always;
-    b.innerHTML="<span class='t'></span> <span class='n'>"+n+"</span>";b.querySelector(".t").textContent=c.title;
+    b.innerHTML="<span class='t'></span>";b.querySelector(".t").textContent=c.title;
     b.onclick=function(){state.course=c.id;render()};
     ct.appendChild(b);
   });
@@ -223,7 +223,7 @@ function render(){
     var n=inSub(cItems,s).length;
     var b=document.createElement("button");b.type="button";b.className="ttab";b.setAttribute("role","tab");
     b.style.setProperty("--c",s.c);b.setAttribute("aria-selected",s.id===sub.id);b.disabled=!n&&!cur.always;
-    b.innerHTML=s.icon+"<span class='t'></span> <span class='n'>"+n+"</span>";b.querySelector(".t").textContent=s.title;
+    b.innerHTML=s.icon+"<span class='t'></span>";b.querySelector(".t").textContent=s.title;
     b.onclick=function(){state.sub=s.id;render()};
     tt.appendChild(b);
   });
@@ -231,7 +231,7 @@ function render(){
   var items=inSub(cItems,sub);
   var g=$("grid");g.innerHTML="";
   items.forEach(function(d){g.appendChild(card(d))});
-  $("count").textContent=(items.length?items.length+" materials":"Carpeta buida: encara no hi ha materials")+" · "+cur.title+" › "+sub.title;
+  $("count").textContent=(items.length?"":"Carpeta buida: encara no hi ha materials · ")+cur.title+" › "+sub.title;
   $("empty").hidden=res.length>0||cur.always;
   $("grid").hidden=res.length===0&&!cur.always;
   $("clear").hidden=!state.q;
