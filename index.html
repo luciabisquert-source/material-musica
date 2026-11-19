@@ -52,7 +52,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Poppins',syst
 .status{padding:10px 22px 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between}
 .clear{background:none;border:0;color:var(--purple);font:600 13px 'Poppins',sans-serif;cursor:pointer;text-decoration:underline}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;padding:14px 12px 0}
-.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+#edbar{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.edb{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:inherit;border-radius:999px;padding:6px 14px;cursor:pointer}#edn{margin-top:8px;font-size:12px}
+.rm{position:absolute;top:10px;right:10px;z-index:3;font:inherit;font-size:12px;font-weight:600;border:0;border-radius:999px;padding:6px 12px;background:rgba(20,18,31,.82);color:#fff;cursor:pointer}.rm.sure{background:#dc2626}
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
 .card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(80,40,160,.18)}
 .card:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
 .ttab .ic{vertical-align:-3px;margin-right:6px}.dot{box-shadow:0 0 0 2px #fff;display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:0}
@@ -81,7 +83,7 @@ footer{margin-top:30px;text-align:center;color:var(--muted);font-size:13px}
     <div class="grid" id="grid" role="tabpanel"></div>
     <div class="empty" id="empty" hidden>Cap material coincideix amb la cerca.</div>
   </div>
-  <footer>Per afegir un material nou, demana-ho a Claude i s'incorporarà a aquest catàleg.</footer>
+  <footer>Per afegir un material nou, demana-ho a Claude i s'incorporarà a aquest catàleg.<div id="edbar"><button type="button" id="ed" class="edb">Edita el catàleg</button><button type="button" id="edr" class="edb" hidden></button><button type="button" id="edc" class="edb" hidden>Copia la llista d'amagats</button></div><div id="edn" hidden>Els materials amagats només s'amaguen en aquest navegador. Per eliminar-los de debò per a tothom, copia la llista i demana-ho a Claude.</div></footer>
 </main>
 
 <script>
@@ -176,9 +178,12 @@ var $=function(id){return document.getElementById(id)};
 function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
 function fmt(d){var p=d.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
 
+var HID=[];try{HID=JSON.parse(localStorage.getItem("hid")||"[]")}catch(e){}
+function hkey(d){return d[5]+"|"+d[2]}
+function saveHid(){try{localStorage.setItem("hid",JSON.stringify(HID))}catch(e){}}
 function filtered(){
   var q=norm(state.q.trim());
-  return DATA.filter(function(d){return !q||norm(d[0]).indexOf(q)>-1});
+  return DATA.filter(function(d){return HID.indexOf(hkey(d))<0&&(!q||norm(d[0]).indexOf(q)>-1)});
 }
 function inCourse(res,c){return res.filter(function(d){return c.levels.indexOf(d[2])>-1})}
 function inSub(items,s){return items.filter(function(d){return s.levels?s.levels.indexOf(d[2])>-1:s.types.indexOf(d[1])>-1})}
@@ -250,13 +255,24 @@ function card(d){
   var l=document.createElement("span");l.textContent=t.label+" · "+fmt(d[4]);
   var o=document.createElement("span");o.className="open";o.textContent="Obrir ↗";
   m.appendChild(l);m.appendChild(o);b.appendChild(h);b.appendChild(m);
-  a.appendChild(th);a.appendChild(b);return a;
+  a.appendChild(th);a.appendChild(b);
+  if(state.edit){var x=document.createElement("button");x.type="button";x.className="rm";x.textContent="Amaga";x.title="Amaga aquest material";
+    x.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();if(x.dataset.sure){HID.push(hkey(d));saveHid();render()}else{x.dataset.sure=1;x.textContent="Segur? Amaga";x.classList.add("sure");setTimeout(function(){x.dataset.sure="";x.textContent="Amaga";x.classList.remove("sure")},3500)}});
+    a.appendChild(x)}
+  return a;
 }
 
 $("q").addEventListener("input",function(e){state.q=e.target.value;render()});
 $("clear").addEventListener("click",function(){state.q="";$("q").value="";render()});
 window.addEventListener("hashchange",function(){fromHash();render()});
 fromHash();render();
+
+(function(){var ed=document.getElementById("ed"),er=document.getElementById("edr"),ec=document.getElementById("edc"),en=document.getElementById("edn");
+function ui(){ed.textContent=state.edit?"Surt del mode edició":"Edita el catàleg";er.hidden=!(state.edit&&HID.length);er.textContent="Restaura els amagats ("+HID.length+")";ec.hidden=!(state.edit&&HID.length);en.hidden=!state.edit}
+ed.addEventListener("click",function(){state.edit=!state.edit;ui();render()});
+er.addEventListener("click",function(){HID=[];saveHid();ui();render()});
+ec.addEventListener("click",function(){var t=DATA.filter(function(d){return HID.indexOf(hkey(d))>-1}).map(function(d){return d[0]}).join("\n");try{navigator.clipboard.writeText(t).then(function(){ec.textContent="Copiat"},function(){ec.textContent="No s'ha pogut copiar"})}catch(e){ec.textContent="No s'ha pogut copiar"}setTimeout(function(){ec.textContent="Copia la llista d'amagats"},2500)});
+var o=render;render=function(){o();ui()};ui();})();
 </script>
 </body>
 </html>
