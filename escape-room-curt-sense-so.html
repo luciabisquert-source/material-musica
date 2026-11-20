@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escape room: El curt sense so</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1E2235;--ink2:#2A2E45;--cream:#FBF6EA;--amber:#F4B63F;--teal:#1F7A86;--teal2:#7FD1DA;--muted:#C9CCDA;--ok:#3FB37F;--bad:#E5596B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:'Nunito Sans',Arial,sans-serif;font-size:18px;line-height:1.5;min-height:100vh}
+h1,h2,h3{font-family:'Fredoka','Trebuchet MS',sans-serif;font-weight:600;line-height:1.15;margin:0}
+.wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
+.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--amber);margin:0 0 8px}
+.card{background:var(--ink2);border:2px solid #3A3F5E;border-radius:20px;padding:26px 28px;margin-top:18px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:13px 26px;cursor:pointer;background:var(--amber);color:var(--ink);font-size:18px}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:var(--cream);border:2px solid var(--muted)}
+.btn:disabled{opacity:.5;cursor:default}
+input[type=text]{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid #4A5075;background:var(--ink);color:var(--cream);margin-top:6px}
+label{font-weight:700;font-size:16px;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.row2{grid-template-columns:1fr}}
+ul.rules{padding-left:22px;margin:10px 0 0}
+ul.rules li{margin:6px 0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.slots{display:flex;gap:10px}
+.slot{width:48px;height:56px;border-radius:12px;border:2px dashed #5A6088;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:30px;color:var(--amber)}
+.slot.on{border:2px solid var(--amber);background:#3A3320}
+.meta{display:flex;gap:18px;color:var(--muted);font-size:16px}
+.story{color:var(--muted);margin:8px 0 18px}
+.item{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;padding:12px 0;border-top:1px solid #3A3F5E}
+.item:first-child{border-top:0}
+@media(max-width:640px){.item{grid-template-columns:1fr}}
+select{font:inherit;width:100%;padding:11px 12px;border-radius:12px;border:2px solid #4A5075;background:var(--ink);color:var(--cream)}
+select.ok{border-color:var(--ok);background:#1E3A33}
+select.bad{border-color:var(--bad);background:#3A2230}
+select:disabled{opacity:1;color:var(--cream)}
+.cloze{font-size:21px;line-height:2.3}
+.cloze select{width:auto;display:inline-block;min-width:130px;margin:0 3px;padding:6px 8px}
+.msg{min-height:26px;margin:14px 0 0;font-weight:700}
+.msg.bad{color:#FF8A99}.msg.ok{color:#7BE0B0}
+.hint{background:#3A3320;border-left:6px solid var(--amber);border-radius:10px;padding:12px 16px;margin-top:14px;color:var(--cream)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.letter{display:inline-flex;width:64px;height:76px;border-radius:14px;background:var(--amber);color:var(--ink);align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:44px;font-weight:600}
+.big{font-family:'Fredoka',sans-serif;font-size:76px;color:var(--amber);line-height:1}
+textarea{width:100%;min-height:230px;font:15px/1.5 ui-monospace,Menlo,monospace;background:var(--ink);color:var(--cream);border:2px solid #4A5075;border-radius:12px;padding:12px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+td,th{text-align:left;padding:8px 10px;border-bottom:1px solid #3A3F5E;font-size:17px}
+th{color:var(--amber)}
+.hidden{display:none}
+.small{font-size:15px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="intro">
+  <p class="eyebrow">Optativa de música · 4t ESO</p>
+  <h1 style="font-size:54px">Escape room: el curt sense so</h1>
+  <div class="card">
+    <h2 style="font-size:28px;color:var(--amber)">Heu quedat tancats a l’estudi!</h2>
+    <p>El curt d’animació <b>«Silenci»</b> s’ha quedat sense el so i la porta de l’estudi de postproducció s’ha bloquejat. Hi ha cinc sales. Cada sala amaga una <b>lletra</b> del codi de sortida. Per aconseguir-la has de demostrar que domines la teoria de la música als curts d’animació.</p>
+    <ul class="rules">
+      <li>Cada sala val <b>2 punts</b>: en total, una nota sobre <b>10</b>.</li>
+      <li>Cada comprovació amb algun error resta <b>0,2</b> punts d’aquella sala.</li>
+      <li>Cada pista que demanis resta <b>0,3</b> punts.</li>
+      <li>Les respostes correctes es queden bloquejades en verd. Corregeix només les vermelles.</li>
+      <li>No pots tornar enrere: avança sala a sala fins a la porta final.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="row2">
+      <div><label for="nom">Nom i cognoms</label><input type="text" id="nom" autocomplete="off"></div>
+      <div><label for="grup">Grup</label><input type="text" id="grup" placeholder="4t ESO" autocomplete="off"></div>
+    </div>
+    <div class="actions"><button class="btn" id="start">Entra a l’estudi</button><span class="small" id="startMsg"></span></div>
+  </div>
+</section>
+
+<section id="game" class="hidden">
+  <div class="top">
+    <div><p class="eyebrow" id="roomCount"></p></div>
+    <div class="meta"><span>⏱ <b id="clock">00:00</b></span><span>Punts: <b id="pts">0,0</b></span></div>
+  </div>
+  <div class="slots" id="slots" style="margin-top:6px"></div>
+  <div class="card" id="roomCard"></div>
+</section>
+
+<section id="door" class="hidden">
+  <p class="eyebrow">Porta final</p>
+  <h1 style="font-size:44px">Has trobat totes les lletres</h1>
+  <div class="card">
+    <div class="slots" id="slots2" style="margin-bottom:16px"></div>
+    <p>Posa les lletres en l’ordre en què les has trobat i escriu la paraula que obre la porta. Pista: és el que s’afegeix a un curt quan hi posem música i efectes.</p>
+    <input type="text" id="code" autocomplete="off" placeholder="Paraula secreta">
+    <div class="actions"><button class="btn" id="open">Obre la porta</button></div>
+    <p class="msg" id="doorMsg"></p>
+  </div>
+</section>
+
+<section id="end" class="hidden">
+  <p class="eyebrow">Heu escapat!</p>
+  <h1 style="font-size:44px">Resultat de <span id="who"></span></h1>
+  <div class="card" style="text-align:center">
+    <p class="small" style="margin:0">Nota final</p>
+    <div class="big"><span id="finalScore"></span><span style="font-size:34px;color:var(--muted)"> / 10</span></div>
+    <p style="font-size:22px;margin:6px 0 0;font-weight:700" id="band"></p>
+  </div>
+  <div class="card">
+    <h3 style="font-size:24px">Detall per sales</h3>
+    <table id="detail"></table>
+    <p class="small" id="timeTxt"></p>
+  </div>
+  <div class="card">
+    <h3 style="font-size:24px">Lliura el resultat</h3>
+    <p>Copia aquest text i enganxa’l a la tasca del Classroom. El codi final serveix perquè el professorat comprovi que no s’ha modificat.</p>
+    <textarea id="report" readonly></textarea>
+    <div class="actions"><button class="btn" id="copy">Copia el resultat</button><span class="small" id="copyMsg"></span></div>
+  </div>
+</section>
+
+<section id="teacher" class="hidden">
+  <p class="eyebrow">Professorat</p>
+  <h1 style="font-size:40px">Verificador de resultats</h1>
+  <div class="card">
+    <p>Enganxa el text que ha lliurat l’alumne/a. Es recalcula el codi i es comprova que coincideixi.</p>
+    <textarea id="vin"></textarea>
+    <div class="actions"><button class="btn" id="vgo">Verifica</button></div>
+    <p class="msg" id="vout"></p>
+  </div>
+</section>
+
+</div>
+<script>
+(function(){
+var ROOMS=[{"title": "Estudi de gravació", "icon": "🎙️", "story": "La primera porta té un text esborrat. Completa els buits amb les paraules correctes.", "hint": "Pensa en el text de la teoria: els efectes són «sons especials», es graven de la vida real, es creen en un estudi o es busquen en biblioteques en línia.", "letter": "A", "kind": "cloze", "text": "Els efectes de so són {0} especials que s’afegeixen a pel·lícules, videojocs i altres produccions per fer-les més {1}, realistes o divertides. Poden ser gravats de la {2} real, com la pluja o un cop de porta, creats en un {3} de gravació o trobats en biblioteques de sons en {4}. Els efectes de so són com el {5} del menjar: afegeixen sabor i emoció.", "items": [{"q": "", "opts": ["sons", "colors", "dibuixos", "instruments"], "h": "1c0myt8"}, {"q": "", "opts": ["emocionants", "avorrides", "curtes", "mudes"], "h": "1gug09m"}, {"q": "", "opts": ["vida", "pantalla", "cuina", "nit"], "h": "1dbaqtb"}, {"q": "", "opts": ["estudi", "jardí", "cinema", "mercat"], "h": "1m63m3u"}, {"q": "", "opts": ["línia", "paper", "vinil", "cinta"], "h": "108ubv2"}, {"q": "", "opts": ["condiment", "decorat", "marc", "color"], "h": "uf7t6n"}]}, {"title": "Magatzem d’efectes", "icon": "📦", "story": "Quatre caixes etiquetades amb un efecte de so. Relaciona cada efecte amb el que aporta.", "hint": "Explosions = acció; riures = comèdia; passos = moviment; suspens = anticipació.", "letter": "U", "kind": "match", "text": null, "items": [{"q": "Explosions", "opts": ["Fan més emocionants les escenes d’acció", "Fan més divertides les bromes d’una comèdia", "Ens fan sentir que el personatge es mou", "Creen anticipació en històries de misteri o terror"], "h": "1oxkqle"}, {"q": "Riures", "opts": ["Fan més emocionants les escenes d’acció", "Fan més divertides les bromes d’una comèdia", "Ens fan sentir que el personatge es mou", "Creen anticipació en històries de misteri o terror"], "h": "r9dpvy"}, {"q": "Passos", "opts": ["Fan més emocionants les escenes d’acció", "Fan més divertides les bromes d’una comèdia", "Ens fan sentir que el personatge es mou", "Creen anticipació en històries de misteri o terror"], "h": "cd87rd"}, {"q": "Suspens", "opts": ["Fan més emocionants les escenes d’acció", "Fan més divertides les bromes d’una comèdia", "Ens fan sentir que el personatge es mou", "Creen anticipació en històries de misteri o terror"], "h": "kd62gl"}]}, {"title": "Sala de les funcions", "icon": "🎼", "story": "Deu panells amb el nom d’una funció de la música. Relaciona cada funció amb la seva descripció.", "hint": "Si dubtes, comença pels que tinguin una paraula clau: leitmotiv, transició, clímax, ambient, sincronitza…", "letter": "D", "kind": "match", "text": null, "items": [{"q": "Establir el to", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "141n3vo"}, {"q": "Realçar emocions", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "eim8dd"}, {"q": "Acompanyar accions i moviments", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "23pq4o"}, {"q": "Indicar canvis d’escena", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "150uav1"}, {"q": "Crear suspens i tensió", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "79fua1"}, {"q": "Identitat i temes de personatges", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "odhre6"}, {"q": "Continuïtat narrativa", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "h38mlm"}, {"q": "Clímax i resolució", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "s0snum"}, {"q": "Crear ambient", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "3f84g8"}, {"q": "Identitat estilística", "opts": ["Marca l’atmosfera al principi del curt", "Intensifica el que senten els personatges", "Se sincronitza amb el que passa a la pantalla", "Assenyala transicions o canvis de trama", "Puja d’intensitat poc a poc per anticipar un moment", "Fa servir leitmotivs que es repeteixen", "Connecta escenes i dóna unitat a la història", "S’intensifica al punt àlgid i se suavitza al final", "Ens transporta a llocs i entorns concrets", "L’estil i la instrumentació donen personalitat al curt"], "h": "1hgel4e"}]}, {"title": "Sala de projecció", "icon": "🎬", "story": "Cinc escenes passen per la pantalla. Quina funció de la música hi detectes?", "hint": "Mira què fa la música: sincronitzar-se, començar, repetir-se, canviar o créixer.", "letter": "I", "kind": "match", "text": null, "items": [{"q": "Un gat cau per les escales i cada cop sona una nota.", "opts": ["Acompanyar accions i moviments", "Establir el to", "Identitat i temes de personatges", "Indicar canvis d’escena", "Crear suspens i tensió"], "h": "a1ui36"}, {"q": "El curt comença amb una melodia misteriosa que ens prepara per a la història.", "opts": ["Acompanyar accions i moviments", "Establir el to", "Identitat i temes de personatges", "Indicar canvis d’escena", "Crear suspens i tensió"], "h": "1u35y13"}, {"q": "Cada vegada que apareix el dolent sona el mateix tema greu.", "opts": ["Acompanyar accions i moviments", "Establir el to", "Identitat i temes de personatges", "Indicar canvis d’escena", "Crear suspens i tensió"], "h": "11c2pgf"}, {"q": "La música canvia de cop i entenem que passem de dia a nit.", "opts": ["Acompanyar accions i moviments", "Establir el to", "Identitat i temes de personatges", "Indicar canvis d’escena", "Crear suspens i tensió"], "h": "1fsrqzt"}, {"q": "La música creix i creix i sabem que alguna cosa passarà.", "opts": ["Acompanyar accions i moviments", "Establir el to", "Identitat i temes de personatges", "Indicar canvis d’escena", "Crear suspens i tensió"], "h": "cffzq5"}]}, {"title": "Sala de control", "icon": "🔐", "story": "L’última porta té un panell de veritat. Marca cada frase com a vertadera o falsa.", "hint": "Recorda: l’ordre és al revés al clímax i a la resolució, i els efectes també es graven de la vida real.", "letter": "O", "kind": "match", "text": null, "items": [{"q": "Tots els efectes de so s’han de crear en un estudi i mai es graven de la vida real.", "opts": ["Vertader", "Fals"], "h": "q2ucf7"}, {"q": "Els efectes de so poden fer que et submergeixis més en la història.", "opts": ["Vertader", "Fals"], "h": "xzaozf"}, {"q": "Al clímax la música se suavitza i a la resolució s’intensifica.", "opts": ["Vertader", "Fals"], "h": "rdfyjp"}, {"q": "Un leitmotiv pot repetir-se al llarg del curt.", "opts": ["Vertader", "Fals"], "h": "10814ql"}, {"q": "Un canvi en la música pot indicar una transició entre escenes.", "opts": ["Vertader", "Fals"], "h": "11cecm6"}, {"q": "La música no pot ajudar a crear ambient ni a situar-nos en un lloc.", "opts": ["Vertader", "Fals"], "h": "tbcdqg"}]}];
+var FINAL='mhuu0r';
+var SALT='ermengol-capcut-4t';
+function h(s){var x=5381;for(var i=0;i<s.length;i++){x=((x<<5)+x+s.charCodeAt(i))>>>0}return x.toString(36)}
+function $(id){return document.getElementById(id)}
+function fmt(n){return n.toFixed(1).replace('.',',')}
+function fmt2(n){return n.toFixed(2).replace('.',',')}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function show(id){['intro','game','door','end','teacher'].forEach(function(s){$(s).classList.toggle('hidden',s!==id)});window.scrollTo(0,0)}
+var S={name:'',group:'',t0:0,i:0,att:[],hints:[],pts:[],letters:[],end:0};
+var tick=null;
+function elapsed(){return Math.round(((S.end||Date.now())-S.t0)/1000)}
+function mmss(sec){var m=Math.floor(sec/60),s=sec%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+function total(){return S.pts.reduce(function(a,b){return a+b},0)}
+function drawSlots(el){el.innerHTML='';for(var k=0;k<ROOMS.length;k++){var d=document.createElement('div');d.className='slot'+(S.letters[k]?' on':'');d.textContent=S.letters[k]||'?';el.appendChild(d)}}
+function drawTop(){$('roomCount').textContent='Sala '+(S.i+1)+' de '+ROOMS.length;$('pts').textContent=fmt(total());drawSlots($('slots'))}
+
+$('start').onclick=function(){
+  var n=$('nom').value.trim();
+  if(n.length<3){$('startMsg').textContent='Escriu el teu nom i cognoms.';return}
+  S.name=n;S.group=$('grup').value.trim()||'—';S.t0=Date.now();S.i=0;S.att=[];S.hints=[];S.pts=[];S.letters=[];
+  tick=setInterval(function(){$('clock').textContent=mmss(elapsed())},1000);
+  show('game');room();
+};
+
+function room(){
+  var r=ROOMS[S.i],ri=S.i;
+  S.att[ri]=0;S.hints[ri]=0;
+  drawTop();
+  var c=$('roomCard');c.innerHTML='';
+  c.insertAdjacentHTML('beforeend','<h2 style="font-size:34px">'+r.icon+' '+r.title+'</h2><p class="story">'+r.story+'</p>');
+  var box=document.createElement('div');c.appendChild(box);
+  var sels=[];
+  function mk(ii){
+    var it=r.items[ii];var s=document.createElement('select');
+    var o0=document.createElement('option');o0.value='';o0.textContent='— tria —';s.appendChild(o0);
+    var opts=(it.opts[0]==='Vertader')?it.opts:shuffle(it.opts.filter(function(v,i,a){return a.indexOf(v)===i}));
+    opts.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;s.appendChild(o)});
+    sels[ii]=s;return s;
+  }
+  if(r.kind==='cloze'){
+    var p=document.createElement('p');p.className='cloze';
+    var parts=r.text.split(/(\{\d+\})/);
+    parts.forEach(function(seg){var m=seg.match(/^\{(\d+)\}$/);if(m){p.appendChild(mk(+m[1]))}else{p.appendChild(document.createTextNode(seg))}});
+    box.appendChild(p);
+  }else{
+    r.items.forEach(function(it,ii){
+      var d=document.createElement('div');d.className='item';
+      var l=document.createElement('div');l.innerHTML=(r.items.length>0?'<b>':'')+it.q+'</b>';
+      d.appendChild(l);d.appendChild(mk(ii));box.appendChild(d);
+    });
+  }
+  var msg=document.createElement('p');msg.className='msg';c.appendChild(msg);
+  var hintBox=document.createElement('div');c.appendChild(hintBox);
+  var act=document.createElement('div');act.className='actions';c.appendChild(act);
+  var chk=document.createElement('button');chk.className='btn';chk.textContent='Comprova';act.appendChild(chk);
+  var hb=document.createElement('button');hb.className='btn ghost';hb.textContent='Demana una pista (−0,3)';act.appendChild(hb);
+  hb.onclick=function(){
+    if(!S.hints[ri])S.hints[ri]=1;
+    hintBox.innerHTML='<div class="hint">💡 '+r.hint+'</div>';
+    hb.textContent='Pista usada';hb.disabled=true;drawTop();
+  };
+  chk.onclick=function(){
+    var empty=0,wrong=0;
+    sels.forEach(function(s){if(s.disabled)return;if(s.value===''){empty++}});
+    if(empty){msg.className='msg bad';msg.textContent='Falten respostes per triar ('+empty+'). Aquesta comprovació no resta punts.';return}
+    sels.forEach(function(s,ii){
+      if(s.disabled)return;
+      if(h(ri+':'+ii+':'+s.value)===r.items[ii].h){s.className='ok';s.disabled=true}
+      else{s.className='bad';wrong++}
+    });
+    if(wrong){S.att[ri]++;msg.className='msg bad';msg.textContent=wrong+(wrong===1?' resposta és incorrecta':' respostes són incorrectes')+' (−0,2 punts). Corregeix les vermelles.';drawTop();return}
+    var p=Math.max(0,2-0.2*S.att[ri]-0.3*S.hints[ri]);p=Math.round(p*100)/100;
+    S.pts[ri]=p;S.letters[ri]=r.letter;drawTop();
+    chk.disabled=true;hb.disabled=true;
+    msg.className='msg ok';msg.innerHTML='Sala superada! Has aconseguit '+fmt2(p)+' de 2 punts.';
+    act.innerHTML='<span class="letter">'+r.letter+'</span><span style="margin:0 10px">Lletra aconseguida</span>';
+    var nb=document.createElement('button');nb.className='btn';nb.textContent=(ri<ROOMS.length-1)?'Següent sala':'Vés a la porta final';
+    act.appendChild(nb);
+    nb.onclick=function(){if(ri<ROOMS.length-1){S.i++;room();window.scrollTo(0,0)}else{drawSlots($('slots2'));show('door')}};
+  };
+}
+
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,'')}
+$('open').onclick=function(){
+  var v=norm($('code').value);
+  if(h('final:'+v)===FINAL){S.end=Date.now();clearInterval(tick);finish()}
+  else{$('doorMsg').className='msg bad';$('doorMsg').textContent='La porta no s’obre. Revisa les lletres i l’ordre.'}
+};
+$('code').addEventListener('keydown',function(e){if(e.key==='Enter')$('open').click()});
+
+function band(n){return n<5?'Insuficient':n<6?'Suficient':n<7?'Bé':n<9?'Notable':'Excel·lent'}
+function finish(){
+  var tot=Math.round(total()*100)/100;
+  $('who').textContent=S.name;
+  $('finalScore').textContent=fmt(tot);
+  $('band').textContent=band(tot);
+  var rows='<tr><th>Sala</th><th>Punts</th><th>Errors</th><th>Pista</th></tr>';
+  ROOMS.forEach(function(r,i){rows+='<tr><td>'+r.icon+' '+r.title+'</td><td>'+fmt2(S.pts[i])+' / 2</td><td>'+S.att[i]+'</td><td>'+(S.hints[i]?'Sí':'No')+'</td></tr>'});
+  $('detail').innerHTML=rows;
+  $('timeTxt').textContent='Temps total: '+mmss(elapsed())+' (el temps no afecta la nota).';
+  var dades=[S.name,S.group,tot.toFixed(2),elapsed(),S.pts.map(function(p){return p.toFixed(2)}).join(';'),S.att.join(';'),S.hints.join(';')].join('|');
+  var code=h(SALT+'|'+dades).toUpperCase();
+  var rep='ESCAPE ROOM · LA MÚSICA ALS CURTS D’ANIMACIÓ\n'+
+    'Alumne/a: '+S.name+'\nGrup: '+S.group+'\n'+
+    'Nota: '+fmt(tot)+' / 10 ('+band(tot)+')\n'+
+    'Temps: '+mmss(elapsed())+'\n'+
+    ROOMS.map(function(r,i){return 'Sala '+(i+1)+' ('+r.title+'): '+fmt2(S.pts[i])+' / 2 · errors '+S.att[i]+' · pista '+(S.hints[i]?'sí':'no')}).join('\n')+
+    '\nDADES: '+dades+'\nCODI: '+code;
+  $('report').value=rep;
+  show('end');
+}
+$('copy').onclick=function(){
+  var t=$('report').value;
+  var ok=function(){$('copyMsg').textContent='Copiat!'};
+  var ko=function(){$('report').select();$('copyMsg').textContent='Selecciona el text i copia’l manualment (Ctrl+C).'};
+  try{navigator.clipboard.writeText(t).then(ok,ko)}catch(e){ko()}
+};
+
+$('vgo').onclick=function(){
+  var t=$('vin').value;var m=t.match(/DADES:\s*(.+)/),c=t.match(/CODI:\s*([A-Z0-9]+)/);var o=$('vout');
+  if(!m||!c){o.className='msg bad';o.textContent='No trobo les línies DADES i CODI.';return}
+  var d=m[1].trim();var ok=h(SALT+'|'+d).toUpperCase()===c[1];
+  var f=d.split('|');
+  if(ok){o.className='msg ok';o.textContent='Resultat vàlid: '+f[0]+' ('+f[1]+'), nota '+f[2].replace('.',',')+' / 10.'}
+  else{o.className='msg bad';o.textContent='El codi no coincideix: les dades s’han modificat.'}
+};
+
+function route(){if(location.hash==='#professorat'){show('teacher')}}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+</body>
+</html>
