@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panell en directe · Escape room</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1E2235;--ink2:#2A2E45;--cream:#FBF6EA;--amber:#F4B63F;--muted:#C9CCDA;--ok:#3FB37F;--bad:#E5596B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:'Nunito Sans',Arial,sans-serif;font-size:20px}
+h1{font-family:'Fredoka',sans-serif;font-weight:600;margin:0;font-size:44px}
+.wrap{max-width:1400px;margin:0 auto;padding:28px 24px}
+.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--amber);margin:0 0 6px}
+.bar{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}
+.stats{display:flex;gap:14px;flex-wrap:wrap}
+.stat{background:var(--ink2);border:2px solid #3A3F5E;border-radius:16px;padding:10px 20px;text-align:center}
+.stat b{display:block;font-family:'Fredoka',sans-serif;font-size:36px;color:var(--amber);line-height:1.1}
+.stat span{font-size:14px;color:var(--muted)}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;background:var(--amber);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--cream);border:2px solid var(--muted)}
+input{font:inherit;padding:11px 14px;border-radius:12px;border:2px solid #4A5075;background:var(--ink);color:var(--cream);width:100%;margin-top:6px}
+.card{background:var(--ink2);border:2px solid #3A3F5E;border-radius:20px;padding:22px 26px;max-width:620px;margin:40px auto}
+table{width:100%;border-collapse:collapse;background:var(--ink2);border-radius:16px;overflow:hidden}
+th,td{padding:11px 12px;text-align:center;border-bottom:1px solid #3A3F5E}
+th{background:#343954;color:var(--amber);font-size:16px}
+td:first-child,th:first-child{text-align:left}
+td.cell{font-weight:700}
+.done{color:var(--ok)}
+.cur{color:var(--amber);animation:p 1.4s infinite}
+.none{color:#5A6088}
+@keyframes p{50%{opacity:.35}}
+.badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:15px;font-weight:700}
+.b-ok{background:#1E3A33;color:#7BE0B0}.b-go{background:#3A3320;color:var(--amber)}
+.small{font-size:15px;color:var(--muted)}
+.hidden{display:none}
+.err{color:#FF8A99;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="login" class="card">
+  <p class="eyebrow">Professorat</p>
+  <h1 style="font-size:36px">Panell en directe</h1>
+  <p class="small">Enganxa l’adreça de l’Apps Script i la contrasenya. Es guarden només en aquest navegador.</p>
+  <label class="small">Adreça de l’Apps Script (acaba en /exec)</label>
+  <input id="url" type="text" autocomplete="off">
+  <label class="small" style="display:block;margin-top:12px">Contrasenya</label>
+  <input id="key" type="password" autocomplete="off">
+  <p style="margin-top:16px"><button class="btn" id="go">Obre el panell</button></p>
+  <p class="err" id="lerr"></p>
+</div>
+
+<div id="main" class="hidden">
+  <div class="bar">
+    <div><p class="eyebrow">Escape room · El curt sense so</p><h1>Resultats en directe</h1></div>
+    <div class="stats">
+      <div class="stat"><b id="sPlay">0</b><span>en joc</span></div>
+      <div class="stat"><b id="sEsc">0</b><span>han escapat</span></div>
+      <div class="stat"><b id="sAvg">–</b><span>mitjana final</span></div>
+    </div>
+  </div>
+  <div class="bar" style="margin-bottom:10px">
+    <span class="small" id="upd">Carregant…</span>
+    <span><button class="btn ghost" id="tg">Amaga els punts</button> <button class="btn ghost" id="out">Canvia la configuració</button></span>
+  </div>
+  <table id="tb"></table>
+  <p class="small" id="nodata" style="margin-top:14px"></p>
+</div>
+
+</div>
+<script>
+(function(){
+var NAMES=['Gravació','Efectes','Funcions','Projecció','Quiz','Control'];
+var N=NAMES.length;
+function $(i){return document.getElementById(i)}
+function fmt(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')}
+function fmt2(n){return (Math.round(n*100)/100).toFixed(2).replace('.',',')}
+function mmss(s){s=Math.max(0,Math.round(s));var m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r}
+function esc(t){var d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML}
+var CFG={url:'',key:''};
+try{var s=localStorage.getItem('escapePanel');if(s)CFG=JSON.parse(s)}catch(e){}
+var showPts=true,timer=null;
+function saveCfg(){try{localStorage.setItem('escapePanel',JSON.stringify(CFG))}catch(e){}}
+function start(){
+  $('login').classList.add('hidden');$('main').classList.remove('hidden');
+  load();clearInterval(timer);timer=setInterval(load,5000);
+}
+$('go').onclick=function(){
+  var u=$('url').value.trim(),k=$('key').value;
+  if(!/^https:\/\/script\.google\.com\//.test(u)||!k){$('lerr').textContent='Falta l’adreça (https://script.google.com/…) o la contrasenya.';return}
+  CFG={url:u,key:k};saveCfg();start();
+};
+$('out').onclick=function(){clearInterval(timer);CFG={url:'',key:''};try{localStorage.removeItem('escapePanel')}catch(e){}$('main').classList.add('hidden');$('login').classList.remove('hidden')};
+$('tg').onclick=function(){showPts=!showPts;$('tg').textContent=showPts?'Amaga els punts':'Mostra els punts';if(last)render(last)};
+var last=null;
+function load(){
+  fetch(CFG.url+(CFG.url.indexOf('?')>-1?'&':'?')+'clau='+encodeURIComponent(CFG.key)+'&_='+Date.now())
+   .then(function(r){return r.json()})
+   .then(function(j){
+     if(j.error){$('upd').innerHTML='<span class="err">Contrasenya incorrecta.</span>';return}
+     last=j.rows;render(j.rows);$('upd').textContent='Actualitzat a les '+new Date().toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' · s’actualitza cada 5 s';
+   })
+   .catch(function(){$('upd').innerHTML='<span class="err">No es pot llegir l’Apps Script. Comprova l’adreça i el desplegament.</span>'});
+}
+function render(rows){
+  var by={};
+  rows.forEach(function(r){
+    var a=by[r.sid]||(by[r.sid]={name:r.name,group:r.group,rooms:{},total:0,done:false,sec:0,t:0});
+    if(r.room>0)a.rooms[r.room]=r;
+    if(r.total>a.total)a.total=r.total;
+    if(r.done)a.done=true;
+    if(r.sec>a.sec)a.sec=r.sec;
+    if(r.t>a.t)a.t=r.t;
+  });
+  var list=Object.keys(by).map(function(k){var a=by[k];a.cleared=Object.keys(a.rooms).length;return a});
+  list.sort(function(a,b){return (b.done-a.done)||(b.cleared-a.cleared)||(b.total-a.total)||(a.sec-b.sec)});
+  var play=list.filter(function(a){return !a.done}).length,esc_=list.filter(function(a){return a.done});
+  $('sPlay').textContent=play;$('sEsc').textContent=esc_.length;
+  $('sAvg').textContent=esc_.length?fmt(esc_.reduce(function(s,a){return s+a.total},0)/esc_.length):'–';
+  var h='<tr><th>Alumne/a</th><th>Grup</th>'+NAMES.map(function(n,i){return '<th>'+(i+1)+'<br><span style="font-weight:400;font-size:13px">'+n+'</span></th>'}).join('')+'<th>Total</th><th>Temps</th><th>Estat</th></tr>';
+  list.forEach(function(a){
+    h+='<tr><td><b>'+esc(a.name)+'</b></td><td>'+esc(a.group)+'</td>';
+    for(var i=1;i<=N;i++){
+      var r=a.rooms[i];
+      if(r)h+='<td class="cell done">✓'+(showPts?' <span style="font-size:15px">'+fmt2(r.pts)+'</span>':'')+'</td>';
+      else if(!a.done&&i===a.cleared+1)h+='<td class="cell cur">▶</td>';
+      else h+='<td class="cell none">·</td>';
+    }
+    h+='<td><b>'+(showPts?fmt(a.total):'—')+'</b></td><td>'+mmss(a.sec)+'</td><td>'+(a.done?'<span class="badge b-ok">Escapat</span>':'<span class="badge b-go">Sala '+Math.min(N,a.cleared+1)+'</span>')+'</td></tr>';
+  });
+  $('tb').innerHTML=h;
+  $('nodata').textContent=list.length?'':'Encara no ha entrat ningú.';
+}
+if(CFG.url&&CFG.key)start();
+})();
+</script>
+</body>
+</html>
