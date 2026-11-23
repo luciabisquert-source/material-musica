@@ -7,50 +7,65 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FFF3DC;--ink:#2B1B4B;--coral:#FF5A5F;--sun:#FFC933;--teal:#12B5A0;--lilac:#7C5CFF;--muted:#6B5E86;--accent:#D6336C;--ok:#12B57A;--bad:#E5484D}
+:root{--wine:#4A0E1C;--wine2:#5E1426;--paper:#FFF6E3;--gold:#F2B632;--red:#D7263D;--ink:#1B0A0E;--muted:#7A5A4A;--ok:#12915F;--bad:#C2262B;--accent:#B3122C}
 *{box-sizing:border-box}
-body{margin:0;background-color:var(--bg);background-image:radial-gradient(#F3DDB0 2px,transparent 2px);background-size:26px 26px;color:var(--ink);font-family:'Nunito Sans',Arial,sans-serif;font-size:18px;line-height:1.5;min-height:100vh}
-h1,h2,h3{font-family:'Fredoka','Trebuchet MS',sans-serif;font-weight:600;line-height:1.15;margin:0;color:var(--ink)}
+body{margin:0;color:var(--paper);font-family:'Nunito Sans',Arial,sans-serif;font-size:18px;line-height:1.5;min-height:100vh;background-color:var(--wine);background-image:radial-gradient(ellipse at 50% -10%,rgba(255,214,120,.35),transparent 55%),repeating-linear-gradient(90deg,var(--wine2) 0 70px,var(--wine) 70px 140px);background-attachment:fixed}
+h1,h2,h3{font-family:'Fredoka','Trebuchet MS',sans-serif;font-weight:600;line-height:1.15;margin:0;color:var(--paper)}
 .wrap{max-width:900px;margin:0 auto;padding:22px 20px 60px}
-.strip{height:30px;border-radius:8px;background:var(--ink);position:relative;margin-bottom:22px}
-.strip::after{content:"";position:absolute;left:10px;right:10px;top:9px;height:12px;background:repeating-linear-gradient(90deg,var(--bg) 0 14px,transparent 14px 28px);border-radius:3px}
-.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:800;color:var(--accent);margin:0 0 8px}
-.card{background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:7px 7px 0 var(--ink);padding:26px 28px;margin-top:22px}
-.btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:14px;padding:11px 24px;cursor:pointer;background:var(--coral);color:#fff;font-size:18px;box-shadow:4px 4px 0 var(--ink);transition:transform .08s}
-.btn:hover{transform:translate(-1px,-1px)}
-.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
-.btn.ghost{background:#fff;color:var(--ink)}
-.btn:disabled{opacity:.5;cursor:default;transform:none}
-input[type=text]{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:3px solid var(--ink);background:#fff;color:var(--ink);margin-top:6px}
+.strip{height:30px;border-radius:6px;background:var(--ink);position:relative;margin-bottom:22px;border:2px solid #000}
+.strip::after{content:"";position:absolute;left:10px;right:10px;top:8px;height:10px;background:repeating-linear-gradient(90deg,var(--gold) 0 12px,transparent 12px 26px);border-radius:3px;opacity:.9}
+.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:800;color:var(--gold);margin:0 0 8px}
+.card{background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:18px;box-shadow:0 8px 0 #000,0 0 0 3px var(--gold);padding:26px 28px;margin-top:26px}
+.card h1,.card h2,.card h3{color:var(--ink)}
+.clap{margin-top:4px}
+.clap .sticks{height:40px;border-radius:12px 12px 0 0;border:3px solid var(--ink);background:repeating-linear-gradient(115deg,#fff 0 30px,var(--ink) 30px 60px);transform:rotate(-2deg) translateY(2px);transform-origin:left bottom}
+.clap .board{background:var(--ink);border:3px solid #000;border-radius:0 0 14px 14px;padding:18px 24px 20px;box-shadow:0 8px 0 #000,0 0 0 3px var(--gold)}
+.clap .tag{font-family:'Courier New',monospace;font-weight:700;font-size:13px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+.clap h1{font-size:56px;color:#fff;margin:2px 0 6px}
+.clap .sub{font-size:24px;color:var(--gold);font-family:'Fredoka',sans-serif;margin:0}
+.clap .cells{display:flex;gap:0;margin-top:14px;border-top:2px solid #fff;font-family:'Courier New',monospace;color:#fff;font-size:14px;letter-spacing:1px}
+.clap .cells div{flex:1;padding:8px 10px 0;border-right:2px solid #fff}.clap .cells div:last-child{border:0}
+.clap .cells b{display:block;color:var(--gold);font-size:18px}
+.btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:12px;padding:11px 24px;cursor:pointer;background:var(--gold);color:var(--ink);font-size:18px;box-shadow:0 5px 0 #000;transition:transform .08s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #000}
+.btn.ghost{background:var(--paper)}
+.btn:disabled{opacity:.5;cursor:default}
+input[type=text]{font:inherit;width:100%;padding:12px 14px;border-radius:10px;border:3px solid var(--ink);background:#fff;color:var(--ink);margin-top:6px}
 label{font-weight:800;font-size:16px;color:var(--muted)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:640px){.row2{grid-template-columns:1fr}}
+@media(max-width:640px){.row2{grid-template-columns:1fr}.clap h1{font-size:40px}}
 ul.rules{padding-left:22px;margin:10px 0 0}
 ul.rules li{margin:6px 0}
-.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.slots{display:flex;gap:8px;flex-wrap:wrap}
-.slot{width:46px;height:54px;border-radius:12px;border:3px dashed #B9A9D9;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:28px;color:#B9A9D9}
-.slot.on{border:3px solid var(--ink);background:var(--sun);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
-.meta{display:flex;gap:18px;color:var(--muted);font-size:16px;font-weight:700}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--ink);border:2px solid #000;border-radius:12px;padding:8px 16px;box-shadow:0 0 0 2px var(--gold)}
+.hud .eyebrow{margin:0;color:var(--gold);font-family:'Courier New',monospace;font-size:15px}
+.meta{display:flex;gap:18px;color:#fff;font-size:16px;font-weight:700;font-family:'Courier New',monospace}
+.rec{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--red);margin-right:6px;animation:blink 1.2s infinite;box-shadow:0 0 8px var(--red)}
+@keyframes blink{50%{opacity:.25}}
+.slots{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.slot{width:44px;height:56px;border-radius:5px;background:var(--ink);border:2px solid #000;position:relative;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:26px;color:#6B4B43}
+.slot::before,.slot::after{content:"";position:absolute;left:4px;right:4px;height:4px;background:repeating-linear-gradient(90deg,#8C6A30 0 4px,transparent 4px 8px)}
+.slot::before{top:3px}.slot::after{bottom:3px}
+.slot.on{color:var(--gold);box-shadow:0 0 12px rgba(242,182,50,.55)}
 .story{color:var(--muted);margin:8px 0 18px}
-.item{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;padding:12px 0;border-top:2px dashed #E4D8F5}
+.item{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;padding:12px 0;border-top:2px dashed #D9C4A0}
 .item:first-child{border-top:0}
 @media(max-width:640px){.item{grid-template-columns:1fr}}
-select{font:inherit;width:100%;padding:11px 12px;border-radius:12px;border:3px solid var(--ink);background:#fff;color:var(--ink)}
+select{font:inherit;width:100%;padding:11px 12px;border-radius:10px;border:3px solid var(--ink);background:#fff;color:var(--ink)}
 select.ok{border-color:var(--ok);background:#D9F7E9}
 select.bad{border-color:var(--bad);background:#FFE3E4}
 select:disabled{opacity:1;color:var(--ink)}
 .cloze{font-size:21px;line-height:2.4}
 .cloze select{width:auto;display:inline-block;min-width:130px;margin:0 3px;padding:6px 8px}
 .msg{min-height:26px;margin:14px 0 0;font-weight:800}
-.msg.bad{color:#C2262B}.msg.ok{color:#0B8F5A}
-.hint{background:#FFF1B8;border:3px solid var(--ink);border-radius:14px;padding:12px 16px;margin-top:14px;color:var(--ink)}
+.msg.bad{color:var(--bad)}.msg.ok{color:#0B8F5A}
+.hint{background:#FFE9A8;border:3px solid var(--ink);border-radius:12px;padding:12px 16px;margin-top:14px;color:var(--ink)}
 .actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;align-items:center}
-.letter{display:inline-flex;width:64px;height:76px;border-radius:14px;background:var(--sun);color:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:44px;font-weight:600}
-.big{font-family:'Fredoka',sans-serif;font-size:80px;color:var(--coral);line-height:1;-webkit-text-stroke:2px var(--ink)}
-textarea{width:100%;min-height:230px;font:15px/1.5 ui-monospace,Menlo,monospace;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:12px;padding:12px}
+.letter{display:inline-flex;width:56px;height:70px;border-radius:6px;background:var(--ink);color:var(--gold);border:2px solid #000;box-shadow:0 0 14px rgba(242,182,50,.6);align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:40px;font-weight:600}
+.big{font-family:'Fredoka',sans-serif;font-size:80px;color:var(--red);line-height:1}
+textarea{width:100%;min-height:230px;font:15px/1.5 ui-monospace,Menlo,monospace;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:12px}
 table{width:100%;border-collapse:collapse;margin-top:10px}
-td,th{text-align:left;padding:8px 10px;border-bottom:2px dashed #E4D8F5;font-size:17px}
+td,th{text-align:left;padding:8px 10px;border-bottom:2px dashed #D9C4A0;font-size:17px}
 th{color:var(--accent)}
 .hidden{display:none}
 .small{font-size:15px;color:var(--muted)}
@@ -61,10 +76,17 @@ th{color:var(--accent)}
 <div class="strip"></div>
 
 <section id="intro">
-  <p class="eyebrow">Optativa de música · 4t ESO</p>
-  <h1 style="font-size:54px">Escape room: el curt sense so</h1>
+  <div class="clap">
+    <div class="sticks"></div>
+    <div class="board">
+      <div class="tag">Estudi de gravació · Optativa de música</div>
+      <h1>Escape room</h1>
+      <p class="sub">El curt sense so</p>
+      <div class="cells"><div>PRODUCCIÓ<b>Silenci</b></div><div>ESCENA<b>1</b></div><div>TAKE<b>1</b></div><div>CURS<b>4t ESO</b></div></div>
+    </div>
+  </div>
   <div class="card">
-    <h2 style="font-size:28px;color:var(--accent)">Heu quedat tancats a l’estudi!</h2>
+    <h2 style="font-size:28px;color:var(--accent)">Silenci a l’estudi! Heu quedat tancats</h2>
     <p>El curt d’animació <b>«Silenci»</b> s’ha quedat sense el so i la porta de l’estudi de postproducció s’ha bloquejat. Hi ha nou sales. Cada sala amaga una <b>lletra</b> del codi de sortida. Per aconseguir-la has de demostrar que domines la teoria de la música als curts d’animació.</p>
     <ul class="rules">
       <li>Cada sala val entre <b>0,75 i 1,5 punts</b> (es veu a cada sala): en total, una nota sobre <b>10</b>.</li>
@@ -85,9 +107,9 @@ th{color:var(--accent)}
 </section>
 
 <section id="game" class="hidden">
-  <div class="top">
+  <div class="hud">
     <div><p class="eyebrow" id="roomCount"></p></div>
-    <div class="meta"><span>⏱ <b id="clock">00:00</b></span><span>Punts: <b id="pts">0,0</b></span></div>
+    <div class="meta"><span><span class="rec"></span>REC <b id="clock">00:00</b></span><span>PUNTS <b id="pts">0,0</b></span></div>
   </div>
   <div class="slots" id="slots" style="margin-top:6px"></div>
   <div class="card" id="roomCard"></div>
@@ -167,7 +189,7 @@ function elapsed(){return Math.round(((S.end||Date.now())-S.t0)/1000)}
 function mmss(sec){var m=Math.floor(sec/60),s=sec%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
 function total(){return S.pts.reduce(function(a,b){return a+b},0)}
 function drawSlots(el){el.innerHTML='';for(var k=0;k<ROOMS.length;k++){var d=document.createElement('div');d.className='slot'+(S.letters[k]?' on':'');d.textContent=S.letters[k]||'?';el.appendChild(d)}}
-function drawTop(){$('roomCount').textContent='Sala '+(S.i+1)+' de '+ROOMS.length;$('pts').textContent=fmt(total());drawSlots($('slots'))}
+function drawTop(){$('roomCount').textContent='SALA '+(S.i+1)+' / '+ROOMS.length;$('pts').textContent=fmt(total());drawSlots($('slots'))}
 
 $('start').onclick=function(){
   var n=$('nom').value.trim();
