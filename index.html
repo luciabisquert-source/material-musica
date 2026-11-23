@@ -55,6 +55,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Poppins',syst
 #edbar{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.edb{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:inherit;border-radius:999px;padding:6px 14px;cursor:pointer}#edn{margin-top:8px;font-size:12px}
 .rm{position:absolute;top:10px;right:10px;z-index:3;font:inherit;font-size:12px;font-weight:600;border:0;border-radius:999px;padding:6px 12px;background:rgba(20,18,31,.82);color:#fff;cursor:pointer}.rm.sure{background:#dc2626}
 .card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+#types[hidden]{display:none}
+.act:hover{transform:none}.act .thumb{display:block}
+.rows{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.row{display:flex;align-items:flex-start;gap:8px;text-decoration:none;color:inherit;font-size:13px;line-height:1.3;padding:6px 8px;border-radius:10px;background:var(--bg);position:relative}
+.row:hover{background:var(--line)}
+.chip{flex:none;font-size:10.5px;font-weight:700;color:#fff;background:var(--c);border-radius:999px;padding:3px 8px;margin-top:1px}
+.rt{flex:1;min-width:0}.rmr{font:inherit;font-size:11px;font-weight:600;border:0;border-radius:999px;padding:3px 9px;background:rgba(20,18,31,.82);color:#fff;cursor:pointer;flex:none}.rmr.sure{background:#dc2626}
 .card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(80,40,160,.18)}
 .card:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
 .ttab .ic{vertical-align:-3px;margin-right:6px}.dot{box-shadow:0 0 0 2px #fff;display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:0}
@@ -240,16 +247,67 @@ function render(){
     tt.appendChild(b);
   });
 
-  var items=inSub(cItems,sub);
+  $("types").hidden=!cur.subs;
+  var items=cur.subs?inSub(cItems,sub):cItems;
   var g=$("grid");g.innerHTML="";
-  items.forEach(function(d){g.appendChild(card(d))});
-  $("count").textContent=(items.length?"":"Carpeta buida: encara no hi ha materials · ")+cur.title+" › "+sub.title;
+  if(cur.subs){items.forEach(function(d){g.appendChild(card(d))})}else{groups(items).forEach(function(gr){g.appendChild(gr.items.length>1||gr.auto?actCard(gr):card(gr.items[0]))})}
+  $("count").textContent=(items.length?"":"Carpeta buida: encara no hi ha materials · ")+cur.title+(cur.subs?" › "+sub.title:"");
   $("empty").hidden=res.length>0||cur.always;
   $("grid").hidden=res.length===0&&!cur.always;
   $("clear").hidden=!state.q;
   setHash();
 }
 
+var ACTS=[
+ ["1r ESO","SA2 · Descobreix la banda sonora",["WExnxLpaHShjxMRaJTUAFL","Y6EhFAaKPe54CD4ABmy5Vu","3mfAmQnMrESPLYZiXhSzi8","7Q9CY1xCi299WcpUzxzwas","Fitxa de l'alumnat · Detectiu de la banda sonora (Up)"]],
+ ["1r ESO","Herois contra el soroll",["Pw1TTmBDpp4m419gDo919b","PNmSUXn14z5Wq3XGVR87KU"]],
+ ["2n ESO","Escape room · La música medieval",["Escape room · La música medieval (diapositives 25-27)","Guia de l'activitat · Escape room La música medieval (PDF)"]],
+ ["2n ESO","Radiografia d'una cançó",["9WXNsdPX9KRsiZoY43ShU3","GH2opVXC5QZvXffqPpzDSd","Fitxes de l'alumnat · Radiografia d'una cançó"]],
+ ["2n ESO","Lliura la teva batalla (rap)",["2td1me2rhtbLkUVNXNss9F","KU4QxpYhcAa3phiGbfFiuD","GTfZSyuG3wXh4gFvGnTEVz","PwVG2AgGoSQbSuFbTqwiUn"]],
+ ["2n ESO","El teu primer beat",["JtqFP3D8wCUHJFwNNquzkC","X1XKmfo6inTvNwGMzToBWG"]],
+ ["2n ESO","El nostre karaoke",["CYWT2isB5zdc5fExZuSgjp","WUA15JyjLfh3yqQHg2ahuR","WDtRFLjuVwThmZ4dpvYwJD","VBwCGQStcQ5JRQ95wuvVn5"]],
+ ["2n ESO","Materials adaptats",["XKS6GUVgswEhvZTEATwWpy","CnTqsL97idCzQ7Js72FPeS"]],
+ ["4t ESO","La música als curts d'animació",["313qnX7v2365xnvrxi5R7n","UnREoZSFsj6dkRXpRQnsi5","B29WfhrBq6DKxc84yeHswv","QebSgzXsvYnAuCR1P3wQmU","7FjKb77eNbFw64mVgxz9qf","V1CE9ZoNFhi5BaENpgDRfo","Y5c9Rk97uMqdHeEXsXQdSG","QjzwUp1Cme5Nju8oQWpjxH","6YyL5kzpUCXu8rmirsuZwy","FKXfcv99fpA4a8VkuBn1Ep","Escape room · El curt sense so (nota del trimestre)"]],
+ ["4t ESO","Projecte de Nadal · nadalenca en stop motion",["3jo1AqX3frPjaMSQME2sDi","UbCivAqzuJwq9CfYAzqHe5","4g3NuJ9pVo9DAQGS1hPKmM","JAeXAvAt1ca5jgstsLbHCq"]],
+ ["4t ESO","El nostre karaoke (4t)",["TndLZ2Ue9SaeeqcgZc5WkN","NRi7wT78ZmZmuJiDgyXgDi"]],
+ ["4t ESO","Don't Worry Be Happy",["WEQmjs8YoQ82eNSzQN6ezo","MeFS9AydbNX7gHEZmGLeg2"]],
+ ["4t ESO","La música del futur (IA)",["TmFPzd8XUP2UGYJR4EK1NB","QHpS1mJWBzK1e4z6ShCfjj","T8aztsw3TELwGPGKHJ6Com","SM7HarUZBZ66U16pfqoETi"]],
+ ["Tutoria","La nostra tribu",["Kh2ahiLKp7zDTucsAj4i3S","La nostra tribu · Panell de la tutora (per projectar)","La nostra tribu"]],
+ ["Tutoria","La Mansió Encantada",["1u8LUhGZFpiT9K2dMcfoZ8","QhvMTp6uvKjDidZV6kJwba"]]
+];
+function actOf(d){for(var i=0;i<ACTS.length;i++){if(ACTS[i][0]===d[2]&&(ACTS[i][2].indexOf(d[5])>-1||ACTS[i][2].indexOf(d[0])>-1))return i}return -1}
+function groups(items){
+  var G=[],by={};
+  items.forEach(function(d){var k=actOf(d);var key=k>-1?"a"+k:"s"+d[5]+d[0];
+    if(!by[key]){by[key]={ord:k>-1?k:1000,title:k>-1?ACTS[k][1]:d[0],items:[],auto:k>-1};G.push(by[key])}by[key].items.push(d)});
+  var o={P:0,A:1,D:2,F:3};
+  G.forEach(function(g){g.items.sort(function(a,b){return o[a[1]]-o[b[1]]||(b[4]>a[4]?1:-1)})});
+  G.sort(function(a,b){return a.ord-b.ord||(b.items[0][4]>a.items[0][4]?1:-1)});
+  return G;
+}
+function thumbOf(items){for(var i=0;i<items.length;i++)if(THUMBS[items[i][5]])return items[i];return items[0]}
+function href(d){return d[5].indexOf("http")===0?d[5]:BASE+d[5]}
+var SHORT={P:"Presentació",A:"Eina",D:"Document",F:"Fitxa"};
+function actCard(g){
+  var main=thumbOf(g.items),t=TYPEINFO[main[1]];
+  var a=document.createElement("div");a.className="card act";a.style.setProperty("--c",t.c);a.style.setProperty("--c2",t.c2);
+  var th=document.createElement("a");th.className="thumb";th.href=href(main);th.target="_blank";th.rel="noopener";th.setAttribute("aria-label","Obre "+main[0]);
+  if(THUMBS[main[5]]){var im=document.createElement("img");im.src="data:image/jpeg;base64,"+THUMBS[main[5]];im.alt="";im.loading="lazy";th.appendChild(im)}else{th.style.height="84px"}
+  var b=document.createElement("div");b.className="body";
+  var h=document.createElement("h3");h.textContent=g.title;b.appendChild(h);
+  var ul=document.createElement("div");ul.className="rows";
+  g.items.forEach(function(d){
+    var ti=TYPEINFO[d[1]];
+    var r=document.createElement("a");r.className="row";r.href=href(d);r.target="_blank";r.rel="noopener";
+    var c=document.createElement("span");c.className="chip";c.style.setProperty("--c",ti.c);c.textContent=SHORT[d[1]];
+    var tx=document.createElement("span");tx.className="rt";tx.textContent=d[0];
+    r.appendChild(c);r.appendChild(tx);
+    if(state.edit){var x=document.createElement("button");x.type="button";x.className="rmr";x.textContent="Amaga";
+      x.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();if(x.dataset.sure){HID.push(hkey(d));saveHid();render()}else{x.dataset.sure=1;x.textContent="Segur?";x.classList.add("sure");setTimeout(function(){x.dataset.sure="";x.textContent="Amaga";x.classList.remove("sure")},3500)}});
+      r.appendChild(x)}
+    ul.appendChild(r)});
+  b.appendChild(ul);a.appendChild(th);a.appendChild(b);return a;
+}
 function card(d){
   var t=TYPEINFO[d[1]];
   var a=document.createElement("a");a.className="card";a.href=d[5].indexOf("http")===0?d[5]:BASE+d[5];a.target="_blank";a.rel="noopener";
