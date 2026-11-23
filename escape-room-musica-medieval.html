@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escape room: La música medieval</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
+<style>
+:root{--wall:#1c1511;--wall2:#2b2019;--line:#5a4333;--bone:#f3e6cc;--mute:#c4ad88;--paper:#f1e3bf;--paper2:#f8eed3;--edge:#c2a876;--ink:#2a1a10;--red:#8f1d1d;--gold:#e0a82e;--blue:#2f4a7a;--ok:#2e6b3a;--bad:#a8231f;--wood:#5b3a22;--wood2:#3f2716;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;color:var(--bone);font:18px/1.55 'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif;min-height:100vh;background-color:var(--wall);
+ background-image:
+  radial-gradient(420px 520px at 0% 12%,rgba(255,150,40,.28),transparent 70%),
+  radial-gradient(420px 520px at 100% 12%,rgba(255,150,40,.28),transparent 70%),
+  linear-gradient(rgba(0,0,0,.35) 2px,transparent 2px),
+  linear-gradient(90deg,rgba(0,0,0,.35) 2px,transparent 2px),
+  linear-gradient(rgba(255,255,255,.03),rgba(0,0,0,.18));
+ background-size:auto,auto,100% 64px,128px 64px,auto;background-attachment:fixed}
+h1,h2,h3{margin:0;font-family:'MedievalSharp','Palatino Linotype',Georgia,serif;font-weight:400;letter-spacing:.01em}
+p{margin:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.hud{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#3a281b,#2a1c13);border-bottom:4px solid #1a110b;box-shadow:0 4px 0 rgba(224,168,46,.35)}
+.hud div{max-width:860px;margin:0 auto;padding:8px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.hud b{font-family:'MedievalSharp',serif;font-size:18px;color:var(--gold);font-weight:400}
+.key{font-size:24px;filter:grayscale(1) opacity(.3)}.key.on{filter:drop-shadow(0 0 6px var(--gold))}
+.btn{font:inherit;font-weight:700;border:2px solid #1a110b;background:linear-gradient(#f0c24a,#c8901f);color:var(--ink);border-radius:8px;padding:10px 18px;cursor:pointer;box-shadow:0 3px 0 #1a110b;min-height:44px}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1a110b}
+.btn.red{background:linear-gradient(#b32a2a,#7a1818);color:#fff3dd}.btn.ghost{background:transparent;color:inherit;border-color:currentColor;box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;cursor:pointer;font:inherit;padding:6px 0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.paper{position:relative;background:radial-gradient(120% 90% at 50% 40%,#f7ecd0,var(--paper) 70%,#dcc592);color:var(--ink);border-radius:6px;padding:22px;margin-top:18px;box-shadow:0 14px 30px rgba(0,0,0,.55);border:3px double #9b7a3c;outline:2px solid #3b2615;outline-offset:3px}
+.paper h3{font-size:22px;margin-bottom:8px;color:var(--red)}
+.hero h1{font-size:clamp(34px,8vw,68px);line-height:1.05;margin:8px 0 14px;color:var(--gold);text-shadow:0 3px 0 #000}
+.hero h1 span{color:#d94a3a}
+.kick{color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+.castle{display:block;width:100%;max-width:520px;margin:18px auto 0;color:#0d0907}
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px}
+.door{position:relative;text-align:left;color:var(--bone);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:200px;padding:18px;border:4px solid #1a110b;border-radius:90px 90px 6px 6px/70px 70px 6px 6px;
+ background:repeating-linear-gradient(90deg,var(--wood) 0 26px,var(--wood2) 26px 28px),var(--wood);box-shadow:inset 0 0 0 3px #7a5230,0 8px 16px rgba(0,0,0,.5)}
+.door::before{content:"";position:absolute;left:0;right:0;top:48%;height:10px;background:#1a1a1d;box-shadow:0 70px 0 #1a1a1d;opacity:.8}
+.door::after{content:"";position:absolute;right:16px;top:55%;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px #1a110b}
+.door:hover:not(.locked){border-color:var(--gold)}
+.door>*{position:relative;z-index:1}
+.door .n{font-family:'MedievalSharp',serif;font-size:64px;line-height:.9;color:var(--gold);text-shadow:0 3px 0 #000}
+.door b{font-family:'MedievalSharp',serif;font-weight:400;font-size:21px;text-shadow:0 2px 0 #000}
+.door small{color:#f3e6cc;text-shadow:0 1px 0 #000}
+.door .st{margin-top:auto;color:#ffe08a;font-weight:700;font-size:15px;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:6px;align-self:flex-start}
+.door.done{border-color:#6fe0a3}.door.done .st{color:#8ff0b8}
+.door.locked{opacity:.55;cursor:not-allowed;filter:grayscale(.6)}
+.code{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.code span{font-family:'MedievalSharp',serif;font-size:28px;min-width:64px;text-align:center;padding:6px 12px;border:3px solid #5a4333;background:rgba(0,0,0,.35);color:#7a6350;border-radius:8px}
+.code span.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px rgba(224,168,46,.5)}
+.card{background:var(--paper2);border:1px solid var(--edge);border-radius:8px;padding:12px 14px;margin:10px 0}
+.card.ok{border-color:var(--ok);background:#e3f1d6}.card.bad{border-color:var(--bad);background:#f8e0d6}
+.q{font-weight:700;margin-bottom:6px}
+select,input[type=text]{font:inherit;color:var(--ink);background:#fffaf0;border:2px solid var(--edge);border-radius:8px;padding:9px 11px;min-height:44px;width:100%;max-width:100%}
+.chip{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--edge);background:#fffaf0;border-radius:8px;padding:9px 12px;margin:6px 0;cursor:pointer}
+.chip:has(input:checked){border-color:var(--blue);background:#e4e9f4}
+.chip input{margin-top:6px;accent-color:var(--blue)}
+.fb{min-height:1.5em;margin-top:10px;font-weight:700}.fb.bad{color:var(--bad)}.fb.good{color:var(--ok)}
+.hint{margin-top:10px;background:#fff1c2;border:2px dashed #b8861c;border-radius:8px;padding:10px 12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tab{font:inherit;font-weight:700;border:2px solid var(--line);background:rgba(0,0,0,.3);color:var(--bone);border-radius:8px;padding:8px 14px;cursor:pointer}
+.tab.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}.tab.done::after{content:" ✓"}
+.big{font-family:'MedievalSharp',serif;font-size:clamp(48px,14vw,100px);color:var(--red);line-height:1}
+.notes p+p{margin-top:8px}
+.notes h3:before,.paper h3:first-child:before{content:"❦ ";color:#9b7a3c}
+.torch{position:fixed;top:14%;font-size:40px;pointer-events:none;animation:fl 1.3s infinite alternate;filter:drop-shadow(0 0 14px #ff9a2a)}
+.torch.l{left:6px}.torch.r{right:6px}
+@keyframes fl{from{transform:scale(1) rotate(-3deg);opacity:.85}to{transform:scale(1.12) rotate(3deg);opacity:1}}
+@media(max-width:700px){.torch{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+.hud .conn{color:#8ff0b8;font-size:14px}
+.pj-on .wrap{max-width:1300px}
+.pj{font-size:20px}
+.pj-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.pj h1{font-size:clamp(34px,5vw,64px);color:var(--gold);text-shadow:0 3px 0 #000;line-height:1.05;margin:0}
+.pj-sub{color:var(--mute);font-size:22px}
+.live{display:flex;align-items:center;gap:10px;font-weight:700;color:#8ff0b8;font-size:22px}
+.live i{width:16px;height:16px;border-radius:50%;background:#e0452e;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.25;transform:scale(.8)}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:16px 0}
+.stat{background:rgba(0,0,0,.4);border:3px solid var(--line);border-radius:12px;padding:12px 18px;color:var(--mute);font-size:20px}
+.stat b{display:block;font-family:'MedievalSharp',serif;font-weight:400;font-size:clamp(40px,6vw,76px);line-height:1;color:var(--gold)}
+.pj-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:18px;align-items:start}
+@media(max-width:900px){.pj-grid{grid-template-columns:1fr}}
+.pj-side{display:flex;flex-direction:column;gap:18px}
+.pj-card{background:linear-gradient(180deg,#f4e8c8,#e8d6a8);color:var(--ink);border:3px double #9b7a3c;outline:2px solid #3b2615;outline-offset:3px;border-radius:6px;padding:18px 20px}
+.pj-card h3{font-size:26px;color:var(--red);margin-bottom:10px}
+.pj-empty{color:#6b5638}
+.lb{display:grid;grid-template-columns:36px minmax(0,1.4fr) minmax(0,1fr) 90px;gap:12px;align-items:center;padding:7px 0;border-bottom:1px solid #cdb887;font-size:22px}
+.lb .pos{font-family:'MedievalSharp',serif;font-size:26px;color:var(--red)}
+.lb .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb small{color:#6b5638;font-weight:400}
+.lb .pc{text-align:right;font-weight:700}
+.lb.fin .pbar i{background:var(--ok)}
+.pbar{display:block;height:16px;background:#d9c795;border:2px solid #6b5638;border-radius:10px;overflow:hidden}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#c8901f,#f0c24a);transition:width .6s}
+.rm{margin:10px 0;font-size:20px}.rm div{display:flex;justify-content:space-between;gap:10px;margin-bottom:4px}
+.hd{margin:8px 0;font-size:20px}.hd b{color:var(--red);font-size:26px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="torch l" aria-hidden="true">🔥</div><div class="torch r" aria-hidden="true">🔥</div>
+<div class="hud" id="hud" hidden><div><b>⚔ ESCAPE ROOM MEDIEVAL ⚔</b><span id="keys"></span><span class="conn" id="conn"></span><span style="margin-left:auto" id="time"></span></div></div>
+<main class="wrap" id="app"></main>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+function h(t,p,...k){const e=document.createElement(t);if(p)for(const a in p){const v=p[a];if(v==null||v===false)continue;if(a==='class')e.className=v;else if(a==='html')e.innerHTML=v;else if(a.slice(0,2)==='on')e.addEventListener(a.slice(2),v);else e.setAttribute(a,v===true?'':v)}k.flat(9).forEach(c=>{if(c!=null&&c!==false)e.append(c.nodeType?c:document.createTextNode(c))});return e}
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+
+/* ---------- CONTINGUT (diapositives 25, 26 i 27) ---------- */
+const ROOMS=[
+{name:'La sala dels deu segles',sub:'Segles V–XV · música religiosa i profana, danses',digit:'10',
+ notes:['Entre els segles V i XV hi ha <b>deu segles</b> de música.','<b>Música religiosa:</b> el cant gregorià i les primeres polifonies sonaven als monestirs i convents.','<b>Música profana:</b> trobadors i joglars cantaven, recitaven i feien jocs malabars, primer als castells i després als carrers i places.','<b>Caroles:</b> danses de festa que unien totes les classes socials. <b>Dansa alta:</b> dels nobles, moviments lents i sense salts. <b>Dansa baixa:</b> popular, moviments ràpids i amb salts.'],
+ puzzles:[
+ {t:'La porta dels dos mons',p:'Tria si cada cosa és música religiosa o profana.',type:'match',opts:['Música religiosa','Música profana'],items:[['Cant gregorià',0],['Trobadors',1],['Primeres polifonies',0],['Joglars que fan malabars al carrer',1]],hint:'Religiosa = monestirs i convents. Profana = castells, carrers i places.'},
+ {t:'El ball del gran saló',p:'Uneix cada dansa amb la seva descripció.',type:'match',opts:['Dansa de festa per a totes les classes socials','Dels nobles: lenta i sense salts','Popular: ràpida i amb salts'],items:[['Carola',0],['Dansa alta',1],['Dansa baixa',2]],hint:'Els nobles anaven pausats. El poble saltava!'},
+ {t:'La música del monestir',p:'On sonaven el cant gregorià i les primeres polifonies?',type:'choice',opts:['Als monestirs i convents','Només a les places dels pobles','Als camps de batalla'],correct:0,hint:'És música religiosa. Pensa on vivien els monjos.'},
+ {t:'Els primers escenaris',p:'On cantaven primer els trobadors i els joglars, abans d\'anar als carrers i a les places?',type:'choice',opts:['Als monestirs','Als castells','Als vaixells'],correct:1,hint:'Els trobadors cantaven per als senyors i les senyores.'},
+ {t:'El cadenat del temps',p:'Quants segles hi ha entre el segle V i el segle XV? Escriu el número. Aquest número és la teva clau d\'aquesta sala.',type:'text',accept:['10','deu'],hint:'Mira el títol de la diapositiva: «Deu segles de música». Escriu-ho amb xifres.'}]},
+{name:'La sala dels pelegrins',sub:'Península Ibèrica · Cantigas i Llibre Vermell',digit:'13',
+ notes:['<b>Cantigas de Santa Maria</b> (Corona de Castella, segle XIII): més de 400 peces recollides pel rei Alfons X el Savi. Escrites en galaicoportuguès. Cants per als pelegrins que anaven a Santiago.','<b>Llibre Vermell de Montserrat</b> (Corona d\'Aragó, segle XIV): uns deu cants per entretenir els pelegrins de Montserrat. En llatí, català i occità. Inclou danses de la mort, com <i>Ad mortem festinamus</i>.'],
+ puzzles:[
+ {t:'Dues joies, dues corones',p:'De quina obra parla cada frase?',type:'match',opts:['Cantigas de Santa Maria','Llibre Vermell de Montserrat'],items:[['Més de 400 peces',0],['Uns deu cants',1],['Escrites en galaicoportuguès',0],['Escrit en llatí, català i occità',1],['Inclou Ad mortem festinamus',1],['Les va recollir el rei Alfons X el Savi',0]],hint:'Cantigas = Castella i molts cants. Llibre Vermell = Montserrat i només uns deu.'},
+ {t:'Camí de pelegrins',p:'Cap a quin lloc anaven els pelegrins que cantaven cada obra?',type:'match',opts:['Santiago','Montserrat'],items:[['Cantigas de Santa Maria',0],['Llibre Vermell de Montserrat',1]],hint:'El nom del llibre ja t\'ho diu!'},
+ {t:'El rei de les cantigas',p:'Quin rei va recollir les Cantigas de Santa Maria?',type:'choice',opts:['Jaume I el Conqueridor','Alfons X el Savi','Ferran el Catòlic'],correct:1,hint:'És el rei «savi». Rellegeix el document.'},
+ {t:'Dues corones, dos segles',p:'Uneix cada obra amb el seu segle.',type:'match',opts:['Segle XIII','Segle XIV'],items:[['Cantigas de Santa Maria (Corona de Castella)',0],['Llibre Vermell de Montserrat (Corona d\'Aragó)',1]],hint:'Una és del XIII i l\'altra, del XIV. Mira els títols de cada obra al document.'},
+ {t:'El cadenat del segle',p:'En quin segle es van escriure les Cantigas de Santa Maria? Escriu el número normal (no en romans). Aquest número és la teva clau d\'aquesta sala.',type:'text',accept:['13'],hint:'La diapositiva diu «Corona de Castella · segle XIII». X = 10, III = 3.'}]},
+{name:'La sala de la banda',sub:'Els instruments medievals',digit:'3',
+ notes:['Els instruments medievals sobretot acompanyaven la veu, i per això sonaven <b>més suaus</b> que els d\'ara. N\'hi havia de totes les famílies, <b>menys d\'electròfons</b>.','<b>Corda:</b> fídula, rabeca, viola de roda, saltiri, llaüt.','<b>Vent:</b> cornamusa, xeremia, flauta de bec, orgue portàtil.','<b>Percussió:</b> pandero, pandereta, adufe.'],
+ puzzles:[
+ {t:'Posa cada instrument al seu lloc',p:'Tria la família de cada instrument.',type:'match',opts:['Corda','Vent','Percussió'],items:[['Fídula',0],['Cornamusa',1],['Pandereta',2],['Llaüt',0],['Flauta de bec',1],['Adufe',2],['Viola de roda',0],['Xeremia',1]],hint:'Corda = es pinça o es fregueix. Vent = hi bufes. Percussió = es colpeja.'},
+ {t:'Per què sonaven més suaus?',p:'Tria la resposta correcta.',type:'choice',opts:['Perquè sobretot acompanyaven la veu','Perquè eren més petits que els d\'ara','Perquè no hi havia públic'],correct:0,hint:'Un instrument que acompanya la veu no ha de tapar-la.'},
+ {t:'La família que no hi era',p:'Quina família d\'instruments NO existia a l\'edat mitjana?',type:'choice',opts:['Els de corda','Els electròfons','Els de percussió'],correct:1,hint:'Necessiten electricitat. Rellegeix: «de totes les famílies, menys...»'},
+ {t:'Veritat o fals?',p:'Marca si cada frase és veritat o fals.',type:'match',opts:['Veritat','Fals'],items:[['Els instruments medievals sobretot acompanyaven la veu',0],['El llaüt és un instrument de percussió',1],['L\'orgue portàtil és un instrument de vent',0],['La pandereta és un instrument de corda',1]],hint:'Repassa les tres llistes del document: corda, vent i percussió.'},
+ {t:'El cadenat de les famílies',p:'Quantes famílies d\'instruments hi havia a l\'edat mitjana? (Compta les de la diapositiva: no hi havia electròfons.) Aquest número és la teva clau d\'aquesta sala.',type:'text',accept:['3','tres'],hint:'Corda, vent i... Compta els tres quadres de la diapositiva.'}]}
+];
+const N=ROOMS.reduce((a,r)=>a+r.puzzles.length,0);
+const GROUPS=['2n A','2n B','2n C'];
+const pid=(ri,pi)=>'r'+(ri+1)+'p'+(pi+1);
+
+/* ---------- ESTAT + SINCRONITZACIÓ ---------- */
+let S={name:'',group:'',sel:[0,0,0],solved:[[],[],[]],t:0,fin:false,err:{},hints:0,view:'start',room:0};
+let DB=null,ME=null,syncT=null,online=false,OWNER=false,CHECKED=false;
+const solvedCount=()=>S.solved.reduce((a,x)=>a+x.length,0);
+const roomDone=i=>S.solved[i].length===ROOMS[i].puzzles.length;
+function payload(){return{name:S.name,group:S.group,sol:S.solved.map(a=>a.length),n:solvedCount(),total:N,err:S.err,hints:S.hints,done:S.fin,secs:S.t,upd:Date.now()}}
+function sync(now){
+  if(!DB||!ME||!S.name) return;
+  clearTimeout(syncT);
+  syncT=setTimeout(()=>{try{const r=DB.collection('players').doc(ME).set(payload());if(r&&r.catch)r.catch(()=>{});}catch(e){}},now?0:500);
+}
+async function initDb(){
+  try{
+    if(!window.claude||!window.claude.use) return;
+    const u=await window.claude.use('user'); const d=await window.claude.use('db');
+    if(u){ try{OWNER=!!(await u.isOwner());}catch(e){OWNER=false;} }
+    if(u&&d){ ME=await u.id(); DB=d; online=true; }
+  }catch(e){}
+  CHECKED=true;
+  if(S.view==='projector'){ if(OWNER) subscribe(); render(); }
+  else { render(); sync(true); }
+}
+
+/* ---------- NAVEGACIÓ ---------- */
+const app=$('#app');
+function go(v,r){S.view=v;if(r!=null)S.room=r;window.scrollTo(0,0);render()}
+setInterval(()=>{if(['hub','room','final'].includes(S.view)&&!S.fin){S.t++;const e=$('#time');if(e)e.textContent=Math.floor(S.t/60)+':'+String(S.t%60).padStart(2,'0')}},1000);
+function hud(){
+  const hu=$('#hud');hu.hidden=S.view==='start'||S.view==='projector';
+  const k=$('#keys');k.innerHTML='';ROOMS.forEach((r,i)=>k.append(h('span',{class:'key'+(roomDone(i)?' on':''),title:'Clau '+(i+1)},'🗝️')));
+  const c=$('#conn');if(c)c.textContent=online?'● en línia':'';
+}
+function render(){hud();document.body.classList.toggle('pj-on',S.view==='projector');({start,hub,room,final,projector}[S.view||'start'])()}
+function route(){
+  if(location.hash==='#projector'){S.view='projector';if(OWNER&&DB)subscribe();}
+  else if(S.view==='projector'){S.view=S.name?'hub':'start'}
+  render();
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- VISTES ALUMNAT ---------- */
+function start(){
+ app.innerHTML='';
+ const inp=h('input',{type:'text',id:'nm',placeholder:'El teu nom',maxlength:'40',autocomplete:'name'});
+ const sel=h('select',{id:'gr','aria-label':'Grup'},h('option',{value:''},'Tria el teu grup…'),GROUPS.map(g=>h('option',{value:g},g)));
+ const err=h('p',{class:'fb bad'});
+ app.append(h('div',{class:'hero'},h('span',{class:'kick'},'Música · 2n ESO'),h('h1',null,'Escapa de la ',h('span',null,'música medieval')),
+  h('p',null,'Un trobador capriciós t\'ha tancat al seu castell. Per sortir has de superar tres sales i trobar tres números secrets. Llegeix el document de cada sala i resol els enigmes. Si t\'encalles, demana una pista.')),
+  h('div',{class:'castle-w',html:'<svg class="castle" viewBox="0 0 520 150" aria-hidden="true"><path fill="currentColor" d="M0 150V96h30V70h10v-8h8v8h10V96h26V54h12v-12h8v12h12V30h-6l14-26 14 26h-6v24h12V42h8v12h12v42h30v-20h8v-8h8v8h8v20h56V60h12v-8h8v8h12v-8h8v8h12v36h20v-30h8v-8h8v8h8v30h40V70h10v-8h8v8h10v26h30V54h10v-8h8v8h12V96h20v54z"/><path fill="#e0a82e" opacity=".85" d="M236 150v-34a20 20 0 0 1 40 0v34z"/></svg>'}),
+  h('div',{class:'paper'},h('h3',null,'Abans d\'entrar'),
+   h('label',{for:'nm',class:'q'},'Com et dius?'),inp,
+   h('label',{for:'gr',class:'q',style:'display:block;margin-top:12px'},'De quin grup ets?'),sel,err,
+   h('div',{class:'row'},h('button',{class:'btn red',onclick:()=>{
+     if(!inp.value.trim()||!sel.value){err.textContent='Escriu el teu nom i tria el teu grup.';return}
+     S.name=inp.value.trim();S.group=sel.value;sync(true);go('hub')}},'Entra al castell'))),
+  OWNER?h('p',{style:'margin-top:22px'},h('button',{class:'link',onclick:()=>{location.hash='projector'}},'Pantalla de projecció (professorat)')):null);
+}
+function hub(){
+ app.innerHTML='';
+ const all=ROOMS.every((_,i)=>roomDone(i));
+ app.append(h('span',{class:'kick'},'Hola, '+S.name),h('h2',{style:'font-size:clamp(24px,5vw,38px);margin-top:4px'},'El passadís del castell'),
+  h('p',{style:'color:var(--mute);margin-top:6px'},all?'Tens els tres números! Ja pots obrir la porta final.':'Cada sala t\'amaga un número. Pots triar l\'ordre.'),
+  h('div',{class:'code'},ROOMS.map((r,i)=>h('span',{class:roomDone(i)?'on':''},roomDone(i)?r.digit:'?'))));
+ const d=h('div',{class:'doors'});
+ ROOMS.forEach((r,i)=>d.append(h('button',{class:'door'+(roomDone(i)?' done':''),onclick:()=>go('room',i)},h('span',{class:'n'},String(i+1)),h('b',null,r.name),h('small',null,r.sub),h('span',{class:'st'},roomDone(i)?'Número aconseguit: '+r.digit:S.solved[i].length+' de '+r.puzzles.length+' enigmes'))));
+ d.append(h('button',{class:'door'+(all?'':' locked'),'aria-disabled':all?null:'true',onclick:()=>{if(all)go('final')}},h('span',{class:'n'},'4'),h('b',null,'La porta final'),h('small',null,'Escriu els tres números'),h('span',{class:'st'},all?'Oberta':'Bloquejada')));
+ app.append(d);
+}
+function room(){
+ const ri=S.room,R=ROOMS[ri];app.innerHTML='';
+ app.append(h('button',{class:'link',onclick:()=>go('hub')},'← Torna al passadís'),
+  h('h2',{style:'font-size:clamp(22px,5vw,34px);margin-top:6px'},'Sala '+(ri+1)+' · '+R.name),
+  h('div',{class:'paper notes'},h('h3',null,'Document trobat a la sala'),R.notes.map(n=>h('p',{html:n}))),
+  h('div',{class:'tabs'},R.puzzles.map((p,i)=>h('button',{class:'tab'+(S.sel[ri]===i?' on':'')+(S.solved[ri].includes(i)?' done':''),onclick:()=>{S.sel[ri]=i;room()}},'Enigma '+(i+1)))));
+ app.append(puzzle(ri,S.sel[ri]));
+}
+function puzzle(ri,pi){
+ const R=ROOMS[ri],P=R.puzzles[pi];
+ const card=h('div',{class:'paper'},h('h3',null,P.t),h('p',null,P.p));
+ if(S.solved[ri].includes(pi)){
+  card.append(h('div',{class:'card ok'},h('b',null,'Enigma resolt!')));
+  const nx=R.puzzles.findIndex((_,i)=>!S.solved[ri].includes(i));
+  if(roomDone(ri)) card.append(h('div',{class:'card ok'},h('p',null,'Sala superada! Número d\'aquesta sala:'),h('div',{class:'big'},R.digit)));
+  card.append(h('div',{class:'row'},nx>=0?h('button',{class:'btn',onclick:()=>{S.sel[ri]=nx;room()}},'Següent enigma'):h('button',{class:'btn',onclick:()=>go('hub')},'Torna al passadís')));
+  return card;
+ }
+ let check;
+ if(P.type==='match'){
+  const sels=P.items.map(it=>{const s=h('select',{'aria-label':it[0]},h('option',{value:''},'Tria…'),P.opts.map((o,i)=>h('option',{value:i},o)));card.append(h('div',{class:'card'},h('div',{class:'q'},it[0]),s));return s});
+  check=()=>{let ok=0;sels.forEach((s,i)=>{const g=s.value!==''&&+s.value===P.items[i][1];if(g)ok++;s.parentNode.className='card '+(g?'ok':'bad')});return{ok:ok===sels.length,msg:ok+' de '+sels.length+' correctes. Revisa les marcades en vermell.'}};
+ }else if(P.type==='choice'){
+  const box=h('div');P.opts.forEach((o,i)=>box.append(h('label',{class:'chip'},h('input',{type:'radio',name:'c',value:i}),h('span',null,o))));card.append(box);
+  check=()=>{const c=box.querySelector('input:checked');return{ok:!!c&&+c.value===P.correct,msg:'No és aquesta. Rellegeix el document de la sala.'}};
+ }else{
+  const inp=h('input',{type:'text',inputmode:'numeric',autocomplete:'off','aria-label':'Resposta',style:'max-width:200px;margin-top:8px'});card.append(inp);
+  check=()=>({ok:P.accept.includes(norm(inp.value)),msg:'Aquest no és el número. Rellegeix el document.'});
+ }
+ const fb=h('p',{class:'fb',role:'status'}),hint=h('div',{class:'hint',hidden:true},'Pista: '+P.hint);
+ const hb=h('button',{class:'btn ghost',onclick:()=>{hint.hidden=false;hb.disabled=true;S.hints++;sync()}},'Pista');
+ card.append(fb,hint,h('div',{class:'row'},h('button',{class:'btn red',onclick:()=>{
+   const r=check();
+   if(r.ok){S.solved[ri].push(pi);sync();room();if(roomDone(ri))setTimeout(()=>{const f=document.querySelector('.big');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})},100)}
+   else{const id=pid(ri,pi);S.err[id]=(S.err[id]||0)+1;sync();fb.textContent=r.msg;fb.className='fb bad'}
+ }},'Comprova'),hb));
+ return card;
+}
+function final(){
+ app.innerHTML='';
+ if(S.fin){app.append(win());return}
+ const ins=[0,1,2].map(i=>h('input',{type:'text',inputmode:'numeric',maxlength:'2','aria-label':'Número '+(i+1),style:'max-width:90px;text-align:center;font-size:24px'}));
+ const fb=h('p',{class:'fb',role:'status'});
+ app.append(h('button',{class:'link',onclick:()=>go('hub')},'← Passadís'),h('h2',{style:'font-size:clamp(22px,5vw,34px)'},'La porta final'),
+  h('div',{class:'paper'},h('h3',null,'El cadenat del trobador'),h('p',null,'Escriu els tres números que has trobat, en l\'ordre de les sales (1, 2 i 3).'),
+   h('div',{class:'row'},ins),fb,
+   h('div',{class:'row'},h('button',{class:'btn red',onclick:()=>{const v=ins.map(i=>i.value.trim());if(v.join(',')===ROOMS.map(r=>r.digit).join(',')){S.fin=true;sync(true);final()}else{S.err.final=(S.err.final||0)+1;sync();fb.textContent='El cadenat no s\'obre. Repassa els números de les sales.';fb.className='fb bad'}}},'Obre la porta'))));
+}
+function win(){
+ return h('div',{class:'hero'},h('span',{class:'kick'},'La porta s\'obre!'),h('h1',null,'Ho has ',h('span',null,'aconseguit')),
+  h('div',{class:'paper'},h('h3',null,'Enhorabona, '+S.name),h('p',null,'Has escapat del castell en '+Math.floor(S.t/60)+' min '+(S.t%60)+' s. Ara saps que a l\'edat mitjana hi va haver deu segles de música, que els pelegrins cantaven les Cantigas i el Llibre Vermell, i que els instruments sonaven suaus perquè acompanyaven la veu.'),
+   h('div',{class:'row'},h('button',{class:'btn ghost',onclick:()=>go('hub')},'Torna al passadís'))));
+}
+
+/* ---------- PANTALLA DE PROJECCIÓ ---------- */
+let ROWS=[],subbed=false,PF='Tots',confirmReset=false,subTimeout=null;
+function docsOf(snap){
+  const out=[];const push=d=>{if(!d)return;const data=typeof d.data==='function'?d.data():(d.data||d);if(data&&typeof data==='object')out.push(Object.assign({},data,{_id:d.id||data._id}))};
+  if(Array.isArray(snap))snap.forEach(push);
+  else if(snap&&Array.isArray(snap.docs))snap.docs.forEach(push);
+  else if(snap&&typeof snap.forEach==='function')snap.forEach(push);
+  return out;
+}
+function subscribe(){
+  if(subbed||!DB||!OWNER) return; subbed=true;
+  try{DB.collection('players').onSnapshot(snap=>{ROWS=docsOf(snap);if(S.view==='projector')drawProjector()},()=>{})}catch(e){subbed=false}
+}
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function projector(){
+  app.innerHTML='';
+  if(!OWNER){
+    app.append(h('div',{class:'paper'},h('h3',null,CHECKED?'Accés restringit':'Comprovant l\'accés…'),h('p',null,CHECKED?'Aquesta pantalla només és per a la persona propietària de l\'escape room.':'Un moment, si us plau.'),
+      CHECKED?h('div',{class:'row'},h('button',{class:'btn',onclick:()=>{location.hash=''}},'Torna a l\'escape room')):null));
+    return;
+  }
+  subscribe();drawProjector();
+}
+function titleOf(id){const m=/^r(\d)p(\d)$/.exec(id);if(!m)return id==='final'?'El cadenat final':id;const R=ROOMS[+m[1]-1];return R?('Sala '+m[1]+' · '+R.puzzles[+m[2]-1].t):id}
+function drawProjector(){
+  if(S.view!=='projector')return;
+  const rows=ROWS.filter(r=>PF==='Tots'||r.group===PF);
+  const done=rows.filter(r=>r.done);
+  const avg=rows.length?(rows.reduce((a,r)=>a+(r.n||0),0)/rows.length):0;
+  const ranked=rows.slice().sort((a,b)=>(b.done?1:0)-(a.done?1:0)||(a.done?(a.secs-b.secs):((b.n||0)-(a.n||0)))||((a.upd||0)-(b.upd||0))).slice(0,12);
+  const errs={};rows.forEach(r=>Object.keys(r.err||{}).forEach(k=>{errs[k]=(errs[k]||0)+(r.err[k]||0)}));
+  const hard=Object.entries(errs).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const root=h('div',{class:'pj'});
+  root.append(h('div',{class:'pj-head'},h('div',null,h('h1',null,'Escape room medieval'),h('p',{class:'pj-sub'},'Resultats en directe')),h('div',{class:'live'},h('i'),online?'En directe':'Esperant connexió…')));
+  root.append(h('div',{class:'tabs'},['Tots'].concat(GROUPS).map(g=>h('button',{class:'tab'+(PF===g?' on':''),onclick:()=>{PF=g;drawProjector()}},g))));
+  root.append(h('div',{class:'stats'},
+    h('div',{class:'stat'},h('b',null,String(rows.length)),'han entrat'),
+    h('div',{class:'stat'},h('b',null,String(done.length)),'han escapat'),
+    h('div',{class:'stat'},h('b',null,avg.toFixed(1)+' / '+N),'enigmes de mitjana')));
+  const lb=h('div',{class:'pj-card'},h('h3',null,'Classificació'));
+  if(!ranked.length) lb.append(h('p',{class:'pj-empty'},online?'Encara no hi ha ningú. Esperant els primers aventurers…':'No hi ha connexió. Obre aquest enllaç amb el compte de Claude.'));
+  ranked.forEach((r,i)=>{
+    const pct=Math.round((r.n||0)/N*100);
+    lb.append(h('div',{class:'lb'+(r.done?' fin':'')},h('span',{class:'pos'},String(i+1)),h('span',{class:'nm'},r.name||'?',h('small',null,' '+(r.group||''))),h('span',{class:'pbar'},h('i',{style:'width:'+pct+'%'})),h('span',{class:'pc'},r.done?('🗝️ '+fmt(r.secs||0)):((r.n||0)+'/'+N))));
+  });
+  const side=h('div',{class:'pj-side'});
+  const rc=h('div',{class:'pj-card'},h('h3',null,'Sales superades'));
+  ROOMS.forEach((R,ri)=>{const c=rows.filter(r=>(r.sol||[])[ri]>=R.puzzles.length).length;const pct=rows.length?Math.round(c/rows.length*100):0;
+    rc.append(h('div',{class:'rm'},h('div',null,'Sala '+(ri+1)+' · '+R.name,h('b',null,c+' ('+pct+'%)')),h('span',{class:'pbar'},h('i',{style:'width:'+pct+'%'}))))});
+  side.append(rc);
+  const hc=h('div',{class:'pj-card'},h('h3',null,'Enigmes més difícils'));
+  if(!hard.length)hc.append(h('p',{class:'pj-empty'},'Encara no hi ha errors.'));
+  hard.forEach(([k,v])=>hc.append(h('p',{class:'hd'},h('b',null,String(v)),' errors · '+titleOf(k))));
+  side.append(hc);
+  root.append(h('div',{class:'pj-grid'},lb,side));
+  const bar=h('div',{class:'row'},h('button',{class:'link',onclick:()=>{location.hash=''}},'Surt de la pantalla'));
+  if(DB){const b=h('button',{class:'link'},confirmReset?'Segur? Esborra tots els resultats':'Esborra els resultats');
+    b.addEventListener('click',async()=>{if(!confirmReset){confirmReset=true;drawProjector();return}confirmReset=false;
+      try{const ids=ROWS.map(r=>r._id).filter(Boolean);await Promise.all(ids.map(id=>DB.collection('players').doc(id).delete()))}catch(e){}drawProjector()});
+    bar.append(b)}
+  root.append(bar);
+  app.innerHTML='';app.append(root);
+}
+
+if(location.hash==='#projector')S.view='projector';
+render();
+initDb();
+})();
+
+</script>
+</body>
+</html>
