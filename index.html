@@ -58,6 +58,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Poppins',syst
 #types[hidden]{display:none}
 .act:hover{transform:none}.act .thumb{display:block}
 .wide{grid-column:1/-1;flex-direction:row!important;order:-1}.wide .thumb{width:320px;height:180px;flex:none;border-radius:0 0 14px 0}@media(max-width:760px){.wide{flex-direction:column!important}.wide .thumb{width:100%}}.secrows{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 14px!important}.sech{grid-column:1/-1;font-weight:700;font-size:13px;margin-top:8px;color:var(--c)}
+.dd{margin-top:8px}.dd>summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--c);list-style:none;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--bg)}
+.dd>summary::-webkit-details-marker{display:none}.dd>summary::after{content:"▾";font-size:11px;transition:transform .15s}.dd[open]>summary::after{transform:rotate(180deg)}
 .rows{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .row{display:flex;align-items:flex-start;gap:8px;text-decoration:none;color:inherit;font-size:13px;line-height:1.3;padding:6px 8px;border-radius:10px;background:var(--bg);position:relative}
 .row:hover{background:var(--line)}
@@ -312,7 +314,9 @@ function actCard(g){
       x.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();if(x.dataset.sure){HID.push(hkey(d));saveHid();render()}else{x.dataset.sure=1;x.textContent="Segur?";x.classList.add("sure");setTimeout(function(){x.dataset.sure="";x.textContent="Amaga";x.classList.remove("sure")},3500)}});
       r.appendChild(x)}
     ul.appendChild(r)});
-  b.appendChild(ul);a.appendChild(th);a.appendChild(b);return a;
+  var dt=document.createElement("details");dt.className="dd";if(state.edit||state.q)dt.open=true;
+  var sm=document.createElement("summary");sm.textContent="Materials ("+g.items.length+")";dt.appendChild(sm);dt.appendChild(ul);
+  b.appendChild(dt);a.appendChild(th);a.appendChild(b);return a;
 }
 function card(d){
   var t=TYPEINFO[d[1]];
