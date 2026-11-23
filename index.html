@@ -57,6 +57,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Poppins',syst
 .card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
 #types[hidden]{display:none}
 .act:hover{transform:none}.act .thumb{display:block}
+.wide{grid-column:1/-1;flex-direction:row!important;order:-1}.wide .thumb{width:320px;height:180px;flex:none;border-radius:0 0 14px 0}@media(max-width:760px){.wide{flex-direction:column!important}.wide .thumb{width:100%}}.secrows{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 14px!important}.sech{grid-column:1/-1;font-weight:700;font-size:13px;margin-top:8px;color:var(--c)}
 .rows{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .row{display:flex;align-items:flex-start;gap:8px;text-decoration:none;color:inherit;font-size:13px;line-height:1.3;padding:6px 8px;border-radius:10px;background:var(--bg);position:relative}
 .row:hover{background:var(--line)}
@@ -261,11 +262,9 @@ function render(){
 var ACTS=[
  ["1r ESO","SA2 · Descobreix la banda sonora",["WExnxLpaHShjxMRaJTUAFL","Y6EhFAaKPe54CD4ABmy5Vu","3mfAmQnMrESPLYZiXhSzi8","7Q9CY1xCi299WcpUzxzwas","Fitxa de l'alumnat · Detectiu de la banda sonora (Up)"]],
  ["1r ESO","Herois contra el soroll",["Pw1TTmBDpp4m419gDo919b","PNmSUXn14z5Wq3XGVR87KU"]],
- ["2n ESO","Escape room · La música medieval",["Escape room · La música medieval (diapositives 25-27)","Guia de l'activitat · Escape room La música medieval (PDF)"]],
- ["2n ESO","Radiografia d'una cançó",["9WXNsdPX9KRsiZoY43ShU3","GH2opVXC5QZvXffqPpzDSd","Fitxes de l'alumnat · Radiografia d'una cançó"]],
- ["2n ESO","Lliura la teva batalla (rap)",["2td1me2rhtbLkUVNXNss9F","KU4QxpYhcAa3phiGbfFiuD","GTfZSyuG3wXh4gFvGnTEVz","PwVG2AgGoSQbSuFbTqwiUn"]],
- ["2n ESO","El teu primer beat",["JtqFP3D8wCUHJFwNNquzkC","X1XKmfo6inTvNwGMzToBWG"]],
  ["2n ESO","El nostre karaoke",["CYWT2isB5zdc5fExZuSgjp","WUA15JyjLfh3yqQHg2ahuR","WDtRFLjuVwThmZ4dpvYwJD","VBwCGQStcQ5JRQ95wuvVn5"]],
+ ["2n ESO","SA2 · Lliura la teva batalla",["2td1me2rhtbLkUVNXNss9F","KU4QxpYhcAa3phiGbfFiuD","GTfZSyuG3wXh4gFvGnTEVz","PwVG2AgGoSQbSuFbTqwiUn","JtqFP3D8wCUHJFwNNquzkC","X1XKmfo6inTvNwGMzToBWG","9WXNsdPX9KRsiZoY43ShU3","GH2opVXC5QZvXffqPpzDSd","Fitxes de l'alumnat · Radiografia d'una cançó","Escape room · La música medieval (diapositives 25-27)","Guia de l'activitat · Escape room La música medieval (PDF)"],
+  [["Lliura la teva batalla",["2td1me2rhtbLkUVNXNss9F","KU4QxpYhcAa3phiGbfFiuD"]],["Els elements de la música",["GTfZSyuG3wXh4gFvGnTEVz"]],["El teu primer beat",["JtqFP3D8wCUHJFwNNquzkC","X1XKmfo6inTvNwGMzToBWG"]],["Radiografia d'una cançó",["9WXNsdPX9KRsiZoY43ShU3","GH2opVXC5QZvXffqPpzDSd","Fitxes de l'alumnat · Radiografia d'una cançó"]],["Escape room · La música medieval",["Escape room · La música medieval (diapositives 25-27)","Guia de l'activitat · Escape room La música medieval (PDF)"]],["Missió: el codi dels monjos",["PwVG2AgGoSQbSuFbTqwiUn"]]]],
  ["2n ESO","Materials adaptats",["XKS6GUVgswEhvZTEATwWpy","CnTqsL97idCzQ7Js72FPeS"]],
  ["4t ESO","La música als curts d'animació",["313qnX7v2365xnvrxi5R7n","UnREoZSFsj6dkRXpRQnsi5","B29WfhrBq6DKxc84yeHswv","QebSgzXsvYnAuCR1P3wQmU","7FjKb77eNbFw64mVgxz9qf","V1CE9ZoNFhi5BaENpgDRfo","Y5c9Rk97uMqdHeEXsXQdSG","QjzwUp1Cme5Nju8oQWpjxH","6YyL5kzpUCXu8rmirsuZwy","FKXfcv99fpA4a8VkuBn1Ep","Escape room · El curt sense so (nota del trimestre)"]],
  ["4t ESO","Projecte de Nadal · nadalenca en stop motion",["3jo1AqX3frPjaMSQME2sDi","UbCivAqzuJwq9CfYAzqHe5","4g3NuJ9pVo9DAQGS1hPKmM","JAeXAvAt1ca5jgstsLbHCq"]],
@@ -289,14 +288,21 @@ function thumbOf(items){for(var i=0;i<items.length;i++)if(THUMBS[items[i][5]])re
 function href(d){return d[5].indexOf("http")===0?d[5]:BASE+d[5]}
 var SHORT={P:"Presentació",A:"Eina",D:"Document",F:"Fitxa"};
 function actCard(g){
-  var main=thumbOf(g.items),t=TYPEINFO[main[1]];
+  var main=thumbOf(g.items);if(ACTS[g.ord]&&ACTS[g.ord][3]){var cv=g.items.filter(function(d){return d[5]===ACTS[g.ord][3][0][1][0]})[0];if(cv)main=cv}
+  var t=TYPEINFO[main[1]];
   var a=document.createElement("div");a.className="card act";a.style.setProperty("--c",t.c);a.style.setProperty("--c2",t.c2);
   var th=document.createElement("a");th.className="thumb";th.href=href(main);th.target="_blank";th.rel="noopener";th.setAttribute("aria-label","Obre "+main[0]);
   if(THUMBS[main[5]]){var im=document.createElement("img");im.src="data:image/jpeg;base64,"+THUMBS[main[5]];im.alt="";im.loading="lazy";th.appendChild(im)}else{th.style.height="84px"}
   var b=document.createElement("div");b.className="body";
   var h=document.createElement("h3");h.textContent=g.title;b.appendChild(h);
-  var ul=document.createElement("div");ul.className="rows";
-  g.items.forEach(function(d){
+  var A=ACTS[g.ord],SECS=A&&A[3];
+  if(SECS){a.classList.add("wide");b.classList.add("secs")}
+  var ul=document.createElement("div");ul.className=SECS?"rows secrows":"rows";
+  var cur=null;
+  var seq=g.items;
+  if(SECS){var oi=function(d){for(var k=0;k<SECS.length;k++)if(SECS[k][1].indexOf(d[5])>-1||SECS[k][1].indexOf(d[0])>-1)return k;return 99};seq=g.items.slice().sort(function(x,y){return oi(x)-oi(y)})}
+  seq.forEach(function(d){
+    if(SECS){var k=oi(d);if(k!==cur){cur=k;var sh=document.createElement("div");sh.className="sech";sh.textContent=k<99?SECS[k][0]:"Altres";ul.appendChild(sh)}}
     var ti=TYPEINFO[d[1]];
     var r=document.createElement("a");r.className="row";r.href=href(d);r.target="_blank";r.rel="noopener";
     var c=document.createElement("span");c.className="chip";c.style.setProperty("--c",ti.c);c.textContent=SHORT[d[1]];
