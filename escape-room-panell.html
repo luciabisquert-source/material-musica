@@ -6,35 +6,35 @@
 <title>Panell en directe · Escape room</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1E2235;--ink2:#2A2E45;--cream:#FBF6EA;--amber:#F4B63F;--muted:#C9CCDA;--ok:#3FB37F;--bad:#E5596B}
+:root{--bg:#FFF3DC;--ink:#2B1B4B;--coral:#FF5A5F;--sun:#FFC933;--muted:#6B5E86;--accent:#D6336C;--ok:#0B8F5A;--bad:#C2262B}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ink);color:var(--cream);font-family:'Nunito Sans',Arial,sans-serif;font-size:20px}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(#F3DDB0 2px,transparent 2px);background-size:26px 26px;color:var(--ink);font-family:'Nunito Sans',Arial,sans-serif;font-size:20px}
 h1{font-family:'Fredoka',sans-serif;font-weight:600;margin:0;font-size:44px}
 .wrap{max-width:1400px;margin:0 auto;padding:28px 24px}
-.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--amber);margin:0 0 6px}
+.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:800;color:var(--accent);margin:0 0 6px}
 .bar{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}
 .stats{display:flex;gap:14px;flex-wrap:wrap}
-.stat{background:var(--ink2);border:2px solid #3A3F5E;border-radius:16px;padding:10px 20px;text-align:center}
-.stat b{display:block;font-family:'Fredoka',sans-serif;font-size:36px;color:var(--amber);line-height:1.1}
-.stat span{font-size:14px;color:var(--muted)}
-.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;background:var(--amber);color:var(--ink)}
-.btn.ghost{background:transparent;color:var(--cream);border:2px solid var(--muted)}
-input{font:inherit;padding:11px 14px;border-radius:12px;border:2px solid #4A5075;background:var(--ink);color:var(--cream);width:100%;margin-top:6px}
-.card{background:var(--ink2);border:2px solid #3A3F5E;border-radius:20px;padding:22px 26px;max-width:620px;margin:40px auto}
-table{width:100%;border-collapse:collapse;background:var(--ink2);border-radius:16px;overflow:hidden}
-th,td{padding:11px 12px;text-align:center;border-bottom:1px solid #3A3F5E}
-th{background:#343954;color:var(--amber);font-size:16px}
+.stat{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 var(--ink);padding:10px 20px;text-align:center}
+.stat b{display:block;font-family:'Fredoka',sans-serif;font-size:36px;color:var(--coral);line-height:1.1}
+.stat span{font-size:14px;color:var(--muted);font-weight:700}
+.btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:14px;padding:9px 20px;cursor:pointer;background:var(--coral);color:#fff;box-shadow:3px 3px 0 var(--ink)}
+.btn.ghost{background:#fff;color:var(--ink)}
+input{font:inherit;padding:11px 14px;border-radius:12px;border:3px solid var(--ink);background:#fff;color:var(--ink);width:100%;margin-top:6px}
+.card{background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:7px 7px 0 var(--ink);padding:22px 26px;max-width:620px;margin:40px auto}
+table{width:100%;border-collapse:collapse;background:#fff;border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+th,td{padding:11px 12px;text-align:center;border-bottom:2px dashed #E4D8F5}
+th{background:var(--sun);color:var(--ink);font-size:16px}
 td:first-child,th:first-child{text-align:left}
-td.cell{font-weight:700}
+td.cell{font-weight:800}
 .done{color:var(--ok)}
-.cur{color:var(--amber);animation:p 1.4s infinite}
-.none{color:#5A6088}
+.cur{color:var(--coral);animation:p 1.4s infinite}
+.none{color:#C9BCE3}
 @keyframes p{50%{opacity:.35}}
-.badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:15px;font-weight:700}
-.b-ok{background:#1E3A33;color:#7BE0B0}.b-go{background:#3A3320;color:var(--amber)}
+.badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:15px;font-weight:800;border:2px solid var(--ink)}
+.b-ok{background:#D9F7E9;color:var(--ok)}.b-go{background:#FFF1B8;color:var(--ink)}
 .small{font-size:15px;color:var(--muted)}
 .hidden{display:none}
-.err{color:#FF8A99;font-weight:700}
+.err{color:var(--bad);font-weight:800}
 </style>
 </head>
 <body>

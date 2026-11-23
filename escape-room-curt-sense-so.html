@@ -7,67 +7,71 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1E2235;--ink2:#2A2E45;--cream:#FBF6EA;--amber:#F4B63F;--teal:#1F7A86;--teal2:#7FD1DA;--muted:#C9CCDA;--ok:#3FB37F;--bad:#E5596B}
+:root{--bg:#FFF3DC;--ink:#2B1B4B;--coral:#FF5A5F;--sun:#FFC933;--teal:#12B5A0;--lilac:#7C5CFF;--muted:#6B5E86;--accent:#D6336C;--ok:#12B57A;--bad:#E5484D}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ink);color:var(--cream);font-family:'Nunito Sans',Arial,sans-serif;font-size:18px;line-height:1.5;min-height:100vh}
-h1,h2,h3{font-family:'Fredoka','Trebuchet MS',sans-serif;font-weight:600;line-height:1.15;margin:0}
-.wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
-.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--amber);margin:0 0 8px}
-.card{background:var(--ink2);border:2px solid #3A3F5E;border-radius:20px;padding:26px 28px;margin-top:18px}
-.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:13px 26px;cursor:pointer;background:var(--amber);color:var(--ink);font-size:18px}
-.btn:hover{filter:brightness(1.07)}
-.btn.ghost{background:transparent;color:var(--cream);border:2px solid var(--muted)}
-.btn:disabled{opacity:.5;cursor:default}
-input[type=text]{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid #4A5075;background:var(--ink);color:var(--cream);margin-top:6px}
-label{font-weight:700;font-size:16px;color:var(--muted)}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(#F3DDB0 2px,transparent 2px);background-size:26px 26px;color:var(--ink);font-family:'Nunito Sans',Arial,sans-serif;font-size:18px;line-height:1.5;min-height:100vh}
+h1,h2,h3{font-family:'Fredoka','Trebuchet MS',sans-serif;font-weight:600;line-height:1.15;margin:0;color:var(--ink)}
+.wrap{max-width:900px;margin:0 auto;padding:22px 20px 60px}
+.strip{height:30px;border-radius:8px;background:var(--ink);position:relative;margin-bottom:22px}
+.strip::after{content:"";position:absolute;left:10px;right:10px;top:9px;height:12px;background:repeating-linear-gradient(90deg,var(--bg) 0 14px,transparent 14px 28px);border-radius:3px}
+.eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:800;color:var(--accent);margin:0 0 8px}
+.card{background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:7px 7px 0 var(--ink);padding:26px 28px;margin-top:22px}
+.btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:14px;padding:11px 24px;cursor:pointer;background:var(--coral);color:#fff;font-size:18px;box-shadow:4px 4px 0 var(--ink);transition:transform .08s}
+.btn:hover{transform:translate(-1px,-1px)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+input[type=text]{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:3px solid var(--ink);background:#fff;color:var(--ink);margin-top:6px}
+label{font-weight:800;font-size:16px;color:var(--muted)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:640px){.row2{grid-template-columns:1fr}}
 ul.rules{padding-left:22px;margin:10px 0 0}
 ul.rules li{margin:6px 0}
 .top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.slots{display:flex;gap:10px}
-.slot{width:48px;height:56px;border-radius:12px;border:2px dashed #5A6088;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:30px;color:var(--amber)}
-.slot.on{border:2px solid var(--amber);background:#3A3320}
-.meta{display:flex;gap:18px;color:var(--muted);font-size:16px}
+.slots{display:flex;gap:8px;flex-wrap:wrap}
+.slot{width:46px;height:54px;border-radius:12px;border:3px dashed #B9A9D9;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:28px;color:#B9A9D9}
+.slot.on{border:3px solid var(--ink);background:var(--sun);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.meta{display:flex;gap:18px;color:var(--muted);font-size:16px;font-weight:700}
 .story{color:var(--muted);margin:8px 0 18px}
-.item{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;padding:12px 0;border-top:1px solid #3A3F5E}
+.item{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;padding:12px 0;border-top:2px dashed #E4D8F5}
 .item:first-child{border-top:0}
 @media(max-width:640px){.item{grid-template-columns:1fr}}
-select{font:inherit;width:100%;padding:11px 12px;border-radius:12px;border:2px solid #4A5075;background:var(--ink);color:var(--cream)}
-select.ok{border-color:var(--ok);background:#1E3A33}
-select.bad{border-color:var(--bad);background:#3A2230}
-select:disabled{opacity:1;color:var(--cream)}
-.cloze{font-size:21px;line-height:2.3}
+select{font:inherit;width:100%;padding:11px 12px;border-radius:12px;border:3px solid var(--ink);background:#fff;color:var(--ink)}
+select.ok{border-color:var(--ok);background:#D9F7E9}
+select.bad{border-color:var(--bad);background:#FFE3E4}
+select:disabled{opacity:1;color:var(--ink)}
+.cloze{font-size:21px;line-height:2.4}
 .cloze select{width:auto;display:inline-block;min-width:130px;margin:0 3px;padding:6px 8px}
-.msg{min-height:26px;margin:14px 0 0;font-weight:700}
-.msg.bad{color:#FF8A99}.msg.ok{color:#7BE0B0}
-.hint{background:#3A3320;border-left:6px solid var(--amber);border-radius:10px;padding:12px 16px;margin-top:14px;color:var(--cream)}
-.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;align-items:center}
-.letter{display:inline-flex;width:64px;height:76px;border-radius:14px;background:var(--amber);color:var(--ink);align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:44px;font-weight:600}
-.big{font-family:'Fredoka',sans-serif;font-size:76px;color:var(--amber);line-height:1}
-textarea{width:100%;min-height:230px;font:15px/1.5 ui-monospace,Menlo,monospace;background:var(--ink);color:var(--cream);border:2px solid #4A5075;border-radius:12px;padding:12px}
+.msg{min-height:26px;margin:14px 0 0;font-weight:800}
+.msg.bad{color:#C2262B}.msg.ok{color:#0B8F5A}
+.hint{background:#FFF1B8;border:3px solid var(--ink);border-radius:14px;padding:12px 16px;margin-top:14px;color:var(--ink)}
+.actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;align-items:center}
+.letter{display:inline-flex;width:64px;height:76px;border-radius:14px;background:var(--sun);color:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:44px;font-weight:600}
+.big{font-family:'Fredoka',sans-serif;font-size:80px;color:var(--coral);line-height:1;-webkit-text-stroke:2px var(--ink)}
+textarea{width:100%;min-height:230px;font:15px/1.5 ui-monospace,Menlo,monospace;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:12px;padding:12px}
 table{width:100%;border-collapse:collapse;margin-top:10px}
-td,th{text-align:left;padding:8px 10px;border-bottom:1px solid #3A3F5E;font-size:17px}
-th{color:var(--amber)}
+td,th{text-align:left;padding:8px 10px;border-bottom:2px dashed #E4D8F5;font-size:17px}
+th{color:var(--accent)}
 .hidden{display:none}
 .small{font-size:15px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
+<div class="strip"></div>
 
 <section id="intro">
   <p class="eyebrow">Optativa de música · 4t ESO</p>
   <h1 style="font-size:54px">Escape room: el curt sense so</h1>
   <div class="card">
-    <h2 style="font-size:28px;color:var(--amber)">Heu quedat tancats a l’estudi!</h2>
+    <h2 style="font-size:28px;color:var(--accent)">Heu quedat tancats a l’estudi!</h2>
     <p>El curt d’animació <b>«Silenci»</b> s’ha quedat sense el so i la porta de l’estudi de postproducció s’ha bloquejat. Hi ha nou sales. Cada sala amaga una <b>lletra</b> del codi de sortida. Per aconseguir-la has de demostrar que domines la teoria de la música als curts d’animació.</p>
     <ul class="rules">
       <li>Cada sala val entre <b>0,75 i 1,5 punts</b> (es veu a cada sala): en total, una nota sobre <b>10</b>.</li>
       <li>Cada comprovació amb algun error resta el <b>10%</b> dels punts d’aquella sala.</li>
       <li>Cada pista que demanis en resta el <b>15%</b>.</li>
       <li>Les respostes correctes es queden bloquejades en verd. Corregeix només les vermelles.</li>
-      <li>El professorat veu en temps real en quina sala estàs i els teus punts: no cal que lliuris res al final.</li>
+      <li>El resultat s’envia automàticament al professorat quan acabis: no cal que lliuris res.</li>
       <li>No pots tornar enrere: avança sala a sala fins a la porta final.</li>
     </ul>
   </div>
