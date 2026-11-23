@@ -67,7 +67,7 @@ th{color:var(--amber)}
       <li>Cada comprovació amb algun error resta <b>0,2</b> punts d’aquella sala.</li>
       <li>Cada pista que demanis resta <b>0,3</b> punts.</li>
       <li>Les respostes correctes es queden bloquejades en verd. Corregeix només les vermelles.</li>
-      <li>El professorat veu en temps real en quina sala estàs i els teus punts.</li>
+      <li>El professorat veu en temps real en quina sala estàs i els teus punts: no cal que lliuris res al final.</li>
       <li>L’escape room dura <b>com a mínim 30 minuts</b>: la porta final no s’obre fins que n’hagin passat 30, encara que acabis abans. Aprofita el temps per repassar.</li>
       <li>No pots tornar enrere: avança sala a sala fins a la porta final.</li>
     </ul>
@@ -117,7 +117,11 @@ th{color:var(--amber)}
     <table id="detail"></table>
     <p class="small" id="timeTxt"></p>
   </div>
-  <div class="card">
+  <div class="card hidden" id="sentCard">
+    <h3 style="font-size:24px">Resultat enviat</h3>
+    <p>El teu resultat ja ha arribat al professorat. No cal que el lliures ni que el copiïs.</p>
+  </div>
+  <div class="card" id="deliver">
     <h3 style="font-size:24px">Lliura el resultat</h3>
     <p>Copia aquest text i enganxa’l a la tasca del Classroom. El codi final serveix perquè el professorat comprovi que no s’ha modificat.</p>
     <textarea id="report" readonly></textarea>
@@ -271,6 +275,7 @@ function finish(){
     '\nDADES: '+dades+'\nCODI: '+code;
   $('report').value=rep;
   send({room:ROOMS.length,pts:S.pts[ROOMS.length-1],att:S.att[ROOMS.length-1],hint:S.hints[ROOMS.length-1],total:tot,done:true,code:code});
+  if(ENDPOINT){$('deliver').classList.add('hidden');$('sentCard').classList.remove('hidden')}
   show('end');
 }
 $('copy').onclick=function(){
