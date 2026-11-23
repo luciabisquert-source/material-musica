@@ -149,6 +149,8 @@ var REVIEW={"fn": [["Establir el to", "Marca l’atmosfera al principi del curt"
 var MIN=1800;
 var SALT='ermengol-capcut-4t';
 var ENDPOINT='';
+var FORM={url:'https://docs.google.com/forms/d/e/1FAIpQLSeBEcnjEPWzECtPvVNw8C3_-hVbh4mEkHY1M5OKY-aL0zAgGg/formResponse',name:'entry.1652823954',group:'entry.1690592070',score:'entry.498545362',detail:'entry.370848334'};
+function sendForm(o){if(!FORM.url)return;try{var b=new URLSearchParams();b.append(FORM.name,o.name);b.append(FORM.group,o.group);b.append(FORM.score,o.score);b.append(FORM.detail,o.detail);fetch(FORM.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:b.toString()}).catch(function(){})}catch(e){}}
 var SID=Math.random().toString(36).slice(2,10);
 function send(o){if(!ENDPOINT)return;try{o.sid=SID;o.name=S.name;o.group=S.group;o.sec=elapsed();fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(o)}).catch(function(){})}catch(e){}}
 function h(s){var x=5381;for(var i=0;i<s.length;i++){x=((x<<5)+x+s.charCodeAt(i))>>>0}return x.toString(36)}
@@ -275,7 +277,8 @@ function finish(){
     '\nDADES: '+dades+'\nCODI: '+code;
   $('report').value=rep;
   send({room:ROOMS.length,pts:S.pts[ROOMS.length-1],att:S.att[ROOMS.length-1],hint:S.hints[ROOMS.length-1],total:tot,done:true,code:code});
-  if(ENDPOINT){$('deliver').classList.add('hidden');$('sentCard').classList.remove('hidden')}
+  sendForm({name:S.name,group:S.group,score:fmt(tot),detail:rep});
+  if(ENDPOINT||FORM.url){$('deliver').classList.add('hidden');$('sentCard').classList.remove('hidden')}
   show('end');
 }
 $('copy').onclick=function(){
