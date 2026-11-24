@@ -100,12 +100,20 @@ select,input[type=text]{font:inherit;color:var(--ink);background:#fffaf0;border:
 .pbar i{display:block;height:100%;background:linear-gradient(90deg,#c8901f,#f0c24a);transition:width .6s}
 .rm{margin:10px 0;font-size:20px}.rm div{display:flex;justify-content:space-between;gap:10px;margin-bottom:4px}
 .hd{margin:8px 0;font-size:20px}.hd b{color:var(--red);font-size:26px}
+.hud .score{color:var(--gold);font-weight:700;font-size:16px}
+.final-score{text-align:center;margin:6px 0 4px}
+.final-score .big{font-size:clamp(56px,16vw,110px);color:var(--red)}
+.final-score .rk{font-family:'MedievalSharp',serif;font-size:24px;color:#5b3a22}
+.sc-tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:17px}
+.sc-tbl td{padding:7px 10px;border-bottom:1px solid var(--edge)}.sc-tbl td:last-child{text-align:right;font-weight:700}
+.sc-tbl tr.tot td{border-top:3px double #9b7a3c;border-bottom:0;font-size:20px;color:var(--red)}
+.sc-note{font-size:15px;color:#5b3a22}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="torch l" aria-hidden="true">🔥</div><div class="torch r" aria-hidden="true">🔥</div>
-<div class="hud" id="hud" hidden><div><b>⚔ ESCAPE ROOM MEDIEVAL ⚔</b><span id="keys"></span><span class="conn" id="conn"></span><span style="margin-left:auto" id="time"></span></div></div>
+<div class="hud" id="hud" hidden><div><b>⚔ ESCAPE ROOM MEDIEVAL ⚔</b><span id="keys"></span><span class="conn" id="conn"></span><span class="score" id="score"></span><span style="margin-left:auto" id="time"></span></div></div>
 <main class="wrap" id="app"></main>
 <script>
 (function(){
@@ -149,9 +157,20 @@ const pid=(ri,pi)=>'r'+(ri+1)+'p'+(pi+1);
 let S={name:'',group:'',sel:[0,0,0],solved:[[],[],[]],t:0,fin:false,err:{},hints:0,view:'start',room:0};
 let DB=null,ME=null,syncT=null,online=false,OWNER=false,CHECKED=false;
 const solvedCount=()=>S.solved.reduce((a,x)=>a+x.length,0);
+function calcScore(){
+  const errs=Object.values(S.err).reduce((a,b)=>a+(b||0),0);
+  const base=solvedCount()*100, pen=errs*10, hp=S.hints*15;
+  const mins=Math.ceil(S.t/60);
+  const bonus=S.fin?Math.max(0,300-Math.max(0,mins-15)*10):0;
+  const total=Math.max(0,base-pen-hp+bonus);
+  const rank=total>=1600?'Llegenda del castell':total>=1300?'Cavaller o cavallera':total>=1000?'Escuder o escudera':'Aprenent de joglar';
+  return{errs,base,pen,hp,bonus,total,rank};
+}
+function updateScore(){const e=$('#score');if(e&&S.view!=='start'&&S.view!=='projector')e.textContent='⭐ '+calcScore().total+' punts'}
 const roomDone=i=>S.solved[i].length===ROOMS[i].puzzles.length;
-function payload(){return{name:S.name,group:S.group,sol:S.solved.map(a=>a.length),n:solvedCount(),total:N,err:S.err,hints:S.hints,done:S.fin,secs:S.t,upd:Date.now()}}
+function payload(){return{name:S.name,group:S.group,sol:S.solved.map(a=>a.length),n:solvedCount(),total:N,score:calcScore().total,err:S.err,hints:S.hints,done:S.fin,secs:S.t,upd:Date.now()}}
 function sync(now){
+  updateScore();
   if(!DB||!ME||!S.name) return;
   clearTimeout(syncT);
   syncT=setTimeout(()=>{try{const r=DB.collection('players').doc(ME).set(payload());if(r&&r.catch)r.catch(()=>{});}catch(e){}},now?0:500);
@@ -175,7 +194,7 @@ setInterval(()=>{if(['hub','room','final'].includes(S.view)&&!S.fin){S.t++;const
 function hud(){
   const hu=$('#hud');hu.hidden=S.view==='start'||S.view==='projector';
   const k=$('#keys');k.innerHTML='';ROOMS.forEach((r,i)=>k.append(h('span',{class:'key'+(roomDone(i)?' on':''),title:'Clau '+(i+1)},'🗝️')));
-  const c=$('#conn');if(c)c.textContent=online?'● en línia':'';
+  const c=$('#conn');if(c)c.textContent=online?'● en línia':'';updateScore();
 }
 function render(){hud();document.body.classList.toggle('pj-on',S.view==='projector');({start,hub,room,final,projector}[S.view||'start'])()}
 function route(){
@@ -192,7 +211,7 @@ function start(){
  const sel=h('select',{id:'gr','aria-label':'Grup'},h('option',{value:''},'Tria el teu grup…'),GROUPS.map(g=>h('option',{value:g},g)));
  const err=h('p',{class:'fb bad'});
  app.append(h('div',{class:'hero'},h('span',{class:'kick'},'Música · 2n ESO'),h('h1',null,'Escapa de la ',h('span',null,'música medieval')),
-  h('p',null,'Un trobador capriciós t\'ha tancat al seu castell. Per sortir has de superar tres sales i trobar tres números secrets. Llegeix el document de cada sala i resol els enigmes. Si t\'encalles, demana una pista.')),
+  h('p',null,'Un trobador capriciós t\'ha tancat al seu castell. Per sortir has de superar tres sales i trobar tres números secrets. Llegeix el document de cada sala i resol els enigmes. Si t\'encalles, demana una pista. Cada enigma resolt val 100 punts; cada error en resta 10 i cada pista en resta 15. Si acabes ràpid, guanyes fins a 300 punts de bonus.')),
   h('div',{class:'castle-w',html:'<svg class="castle" viewBox="0 0 520 150" aria-hidden="true"><path fill="currentColor" d="M0 150V96h30V70h10v-8h8v8h10V96h26V54h12v-12h8v12h12V30h-6l14-26 14 26h-6v24h12V42h8v12h12v42h30v-20h8v-8h8v8h8v20h56V60h12v-8h8v8h12v-8h8v8h12v36h20v-30h8v-8h8v8h8v30h40V70h10v-8h8v8h10v26h30V54h10v-8h8v8h12V96h20v54z"/><path fill="#e0a82e" opacity=".85" d="M236 150v-34a20 20 0 0 1 40 0v34z"/></svg>'}),
   h('div',{class:'paper'},h('h3',null,'Abans d\'entrar'),
    h('label',{for:'nm',class:'q'},'Com et dius?'),inp,
@@ -262,8 +281,19 @@ function final(){
    h('div',{class:'row'},h('button',{class:'btn red',onclick:()=>{const v=ins.map(i=>i.value.trim());if(v.join(',')===ROOMS.map(r=>r.digit).join(',')){S.fin=true;sync(true);final()}else{S.err.final=(S.err.final||0)+1;sync();fb.textContent='El cadenat no s\'obre. Repassa els números de les sales.';fb.className='fb bad'}}},'Obre la porta'))));
 }
 function win(){
+ const sc=calcScore();
+ const row=(a,b,c)=>h('tr',{class:c||''},h('td',null,a),h('td',null,b));
  return h('div',{class:'hero'},h('span',{class:'kick'},'La porta s\'obre!'),h('h1',null,'Ho has ',h('span',null,'aconseguit')),
-  h('div',{class:'paper'},h('h3',null,'Enhorabona, '+S.name),h('p',null,'Has escapat del castell en '+Math.floor(S.t/60)+' min '+(S.t%60)+' s. Ara saps que a l\'edat mitjana hi va haver deu segles de música, que els pelegrins cantaven les Cantigas i el Llibre Vermell, i que els instruments sonaven suaus perquè acompanyaven la veu.'),
+  h('div',{class:'paper'},h('h3',null,'Enhorabona, '+S.name),
+   h('div',{class:'final-score'},h('div',{class:'big'},String(sc.total)),h('div',{class:'rk'},'punts · '+sc.rank)),
+   h('table',{class:'sc-tbl'},
+     row('Enigmes resoltes ('+solvedCount()+' × 100)','+'+sc.base),
+     row('Errors ('+sc.errs+' × 10)','−'+sc.pen),
+     row('Pistes ('+S.hints+' × 15)','−'+sc.hp),
+     row('Bonus de temps ('+fmt(S.t)+')','+'+sc.bonus),
+     row('Puntuació final',String(sc.total),'tot')),
+   h('p',{class:'sc-note'},'Has escapat del castell en '+Math.floor(S.t/60)+' min '+(S.t%60)+' s. El bonus de temps és de 300 punts si acabes en 15 minuts o menys, i baixa 10 punts per cada minut més, fins a 0.'),
+   h('p',{style:'margin-top:10px'},'Ara saps que a l\'edat mitjana hi va haver deu segles de música, que els pelegrins cantaven les Cantigas i el Llibre Vermell, i que els instruments sonaven suaus perquè acompanyaven la veu.'),
    h('div',{class:'row'},h('button',{class:'btn ghost',onclick:()=>go('hub')},'Torna al passadís'))));
 }
 
@@ -296,7 +326,8 @@ function drawProjector(){
   const rows=ROWS.filter(r=>PF==='Tots'||r.group===PF);
   const done=rows.filter(r=>r.done);
   const avg=rows.length?(rows.reduce((a,r)=>a+(r.n||0),0)/rows.length):0;
-  const ranked=rows.slice().sort((a,b)=>(b.done?1:0)-(a.done?1:0)||(a.done?(a.secs-b.secs):((b.n||0)-(a.n||0)))||((a.upd||0)-(b.upd||0))).slice(0,12);
+  const ranked=rows.slice().sort((a,b)=>(b.done?1:0)-(a.done?1:0)||(a.done?((b.score||0)-(a.score||0)||(a.secs-b.secs)):((b.n||0)-(a.n||0)))||((a.upd||0)-(b.upd||0))).slice(0,12);
+  const avgScore=done.length?Math.round(done.reduce((a,r)=>a+(r.score||0),0)/done.length):0;
   const errs={};rows.forEach(r=>Object.keys(r.err||{}).forEach(k=>{errs[k]=(errs[k]||0)+(r.err[k]||0)}));
   const hard=Object.entries(errs).sort((a,b)=>b[1]-a[1]).slice(0,3);
   const root=h('div',{class:'pj'});
@@ -305,12 +336,13 @@ function drawProjector(){
   root.append(h('div',{class:'stats'},
     h('div',{class:'stat'},h('b',null,String(rows.length)),'han entrat'),
     h('div',{class:'stat'},h('b',null,String(done.length)),'han escapat'),
-    h('div',{class:'stat'},h('b',null,avg.toFixed(1)+' / '+N),'enigmes de mitjana')));
-  const lb=h('div',{class:'pj-card'},h('h3',null,'Classificació'));
+    h('div',{class:'stat'},h('b',null,avg.toFixed(1)+' / '+N),'enigmes de mitjana'),
+    h('div',{class:'stat'},h('b',null,done.length?String(avgScore):'–'),'puntuació mitjana')));
+  const lb=h('div',{class:'pj-card'},h('h3',null,'Classificació (per puntuació)'));
   if(!ranked.length) lb.append(h('p',{class:'pj-empty'},online?'Encara no hi ha ningú. Esperant els primers aventurers…':'No hi ha connexió. Obre aquest enllaç amb el compte de Claude.'));
   ranked.forEach((r,i)=>{
     const pct=Math.round((r.n||0)/N*100);
-    lb.append(h('div',{class:'lb'+(r.done?' fin':'')},h('span',{class:'pos'},String(i+1)),h('span',{class:'nm'},r.name||'?',h('small',null,' '+(r.group||''))),h('span',{class:'pbar'},h('i',{style:'width:'+pct+'%'})),h('span',{class:'pc'},r.done?('🗝️ '+fmt(r.secs||0)):((r.n||0)+'/'+N))));
+    lb.append(h('div',{class:'lb'+(r.done?' fin':'')},h('span',{class:'pos'},String(i+1)),h('span',{class:'nm'},r.name||'?',h('small',null,' '+(r.group||''))),h('span',{class:'pbar'},h('i',{style:'width:'+pct+'%'})),h('span',{class:'pc'},r.done?('⭐ '+(r.score||0)):((r.n||0)+'/'+N))));
   });
   const side=h('div',{class:'pj-side'});
   const rc=h('div',{class:'pj-card'},h('h3',null,'Sales superades'));
