@@ -294,7 +294,18 @@ function win(){
      row('Puntuació final',String(sc.total),'tot')),
    h('p',{class:'sc-note'},'Has escapat del castell en '+Math.floor(S.t/60)+' min '+(S.t%60)+' s. El bonus de temps és de 300 punts si acabes en 15 minuts o menys, i baixa 10 punts per cada minut més, fins a 0.'),
    h('p',{style:'margin-top:10px'},'Ara saps que a l\'edat mitjana hi va haver deu segles de música, que els pelegrins cantaven les Cantigas i el Llibre Vermell, i que els instruments sonaven suaus perquè acompanyaven la veu.'),
+   resultBox(sc),
    h('div',{class:'row'},h('button',{class:'btn ghost',onclick:()=>go('hub')},'Torna al passadís'))));
+}
+function resultBox(sc){
+ const line='RESULTAT · '+S.name+' · '+(S.group||'')+' · '+sc.total+' punts · '+solvedCount()+'/'+N+' enigmes · '+sc.errs+' errors · '+S.hints+' pistes · '+fmt(S.t);
+ const ta=h('textarea',{readonly:'readonly',rows:'2',style:'width:100%;margin-top:8px;font:inherit;padding:8px;border:2px solid #8a6a3b;border-radius:6px;background:#fff8e6'});
+ ta.value=line;
+ const msg=h('span',{style:'margin-left:8px;font-weight:700'},'');
+ const btn=h('button',{class:'btn',onclick:()=>{ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+   try{navigator.clipboard&&navigator.clipboard.writeText(line)}catch(e){}
+   msg.textContent=ok?'Copiat!':'Selecciona el text i copia\'l'}},'Copia el resultat');
+ return h('div',{style:'margin-top:12px'},h('p',null,h('b',null,'Envia el teu resultat a la professora:'),' copia aquest text i enganxa\'l a la tasca de Classroom.'),ta,h('div',{class:'row'},btn,msg));
 }
 
 /* ---------- PANTALLA DE PROJECCIÓ ---------- */
