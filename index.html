@@ -280,7 +280,7 @@ var ACTS=[
   [["Lliura la teva batalla",["2td1me2rhtbLkUVNXNss9F","KU4QxpYhcAa3phiGbfFiuD"]],["Els elements de la música",["GTfZSyuG3wXh4gFvGnTEVz"]],["El teu primer beat",["JtqFP3D8wCUHJFwNNquzkC","X1XKmfo6inTvNwGMzToBWG"]],["Radiografia d'una cançó",["9WXNsdPX9KRsiZoY43ShU3","GH2opVXC5QZvXffqPpzDSd","Fitxes de l'alumnat · Radiografia d'una cançó"]],["Escape room · La música medieval",["Escape room · La música medieval (diapositives 25-27)","Guia de l'activitat · Escape room La música medieval (PDF)"]],["Missió: el codi dels monjos",["PwVG2AgGoSQbSuFbTqwiUn"]]],
   [["🏰 Juga a l'escape room de música medieval","https://luciabisquert-source.github.io/material-musica/escape-room-musica-medieval.html"],["📜 Guia de l'activitat (PDF)","https://luciabisquert-source.github.io/material-musica/fitxes/Guia_Escape_room_musica_medieval_2nESO.pdf"]]],
  ["2n ESO","Materials adaptats",["XKS6GUVgswEhvZTEATwWpy","CnTqsL97idCzQ7Js72FPeS"]],
- ["4t ESO","La música als curts d'animació",["313qnX7v2365xnvrxi5R7n","UnREoZSFsj6dkRXpRQnsi5","B29WfhrBq6DKxc84yeHswv","QebSgzXsvYnAuCR1P3wQmU","7FjKb77eNbFw64mVgxz9qf","V1CE9ZoNFhi5BaENpgDRfo","Y5c9Rk97uMqdHeEXsXQdSG","QjzwUp1Cme5Nju8oQWpjxH","6YyL5kzpUCXu8rmirsuZwy","FKXfcv99fpA4a8VkuBn1Ep","Escape room · El curt sense so (nota del trimestre)"]],
+ ["4t ESO","La música als curts d'animació",["313qnX7v2365xnvrxi5R7n","UnREoZSFsj6dkRXpRQnsi5","B29WfhrBq6DKxc84yeHswv","QebSgzXsvYnAuCR1P3wQmU","7FjKb77eNbFw64mVgxz9qf","V1CE9ZoNFhi5BaENpgDRfo","Y5c9Rk97uMqdHeEXsXQdSG","QjzwUp1Cme5Nju8oQWpjxH","6YyL5kzpUCXu8rmirsuZwy","FKXfcv99fpA4a8VkuBn1Ep","Escape room · El curt sense so (nota del trimestre)"],null,[["🎬 Juga a l'escape room: El curt sense so","https://luciabisquert-source.github.io/material-musica/escape-room-curt-sense-so.html"]],"https://luciabisquert-source.github.io/material-musica/escape-room-curt-sense-so.html"],
  ["4t ESO","Projecte de Nadal · nadalenca en stop motion",["3jo1AqX3frPjaMSQME2sDi","UbCivAqzuJwq9CfYAzqHe5","4g3NuJ9pVo9DAQGS1hPKmM","JAeXAvAt1ca5jgstsLbHCq"]],
  ["4t ESO","El nostre karaoke (4t)",["TndLZ2Ue9SaeeqcgZc5WkN","NRi7wT78ZmZmuJiDgyXgDi"]],
  ["4t ESO","Don't Worry Be Happy",["WEQmjs8YoQ82eNSzQN6ezo","MeFS9AydbNX7gHEZmGLeg2"]],
@@ -303,6 +303,7 @@ function href(d){return d[5].indexOf("http")===0?d[5]:BASE+d[5]}
 var SHORT={P:"Presentació",A:"Eina",D:"Document",F:"Fitxa"};
 function actCard(g){
   var main=thumbOf(g.items);if(ACTS[g.ord]&&ACTS[g.ord][3]){var cv=g.items.filter(function(d){return d[5]===ACTS[g.ord][3][0][1][0]})[0];if(cv)main=cv}
+  var A0=ACTS[g.ord];if(A0&&A0[5]){var cv2=g.items.filter(function(d){return d[5]===A0[5]})[0];if(cv2)main=cv2}
   var t=TYPEINFO[main[1]];
   var a=document.createElement("div");a.className="card act";a.style.setProperty("--c",t.c);a.style.setProperty("--c2",t.c2);
   var th=document.createElement("a");th.className="thumb";th.href=href(main);th.target="_blank";th.rel="noopener";th.setAttribute("aria-label","Obre "+main[0]);
