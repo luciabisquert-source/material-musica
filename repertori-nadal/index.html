@@ -283,7 +283,7 @@ let STAGE={lanes:[],items:[]};
 const CCOL=['#e53935','#1e88e5','#43a047','#8e24aa','#fb8c00','#00897b'];
 function buildStage(){
   const sg=song(),k=st.tab;let lanes=[],items=[];
-  if(k==='glock'){const ps=[...new Set(sg.glock.map(n=>n.m))].sort((a,b)=>a-b);
+  if(k==='glock'){const ps=[...new Set(sg.glock.map(n=>n.m))].sort((a,b)=>b-a);
     lanes=ps.map(m=>{const q=nm(m);return{label:q.name+(q.oct?"'":''),color:COL[q.i],txt:TXT[q.i]}});
     items=sg.glock.map(n=>{const q=nm(n.m);return{t:n.t,d:n.d,lane:ps.indexOf(n.m),label:q.name+(q.oct?"'":'')}})}
   if(k==='piano'||k==='uke'){const cs=[...new Set(sg.pulses.map(p=>p.c))];lanes=cs.map((c,i)=>({label:c,color:CCOL[i%6],txt:'#fff'}));
