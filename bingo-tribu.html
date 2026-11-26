@@ -101,7 +101,7 @@ aside{display:flex;flex-direction:column;gap:18px}
 .hist{margin-top:18px}
 .hist h3{font-family:var(--display);font-weight:400;font-size:1.2rem;margin:0 0 8px}
 .hist ol{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
-.hist li{background:#fff;border:2px solid var(--plum);border-radius:999px;padding:2px 12px 2px 4px;font-weight:700;font-size:.95rem;display:flex;gap:6px;align-items:center}
+.hist li{background:#fff;border:2px solid var(--plum);border-radius:999px;padding:3px 14px;font-weight:700;font-size:.95rem;display:flex;gap:6px;align-items:center}
 .hist li i{font-style:normal;background:var(--plum);color:#fff;border-radius:999px;min-width:24px;height:24px;display:grid;place-items:center;font-size:.8rem;padding:0 4px}
 .hist li.last{background:var(--sun)}
 .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin:0;padding:0;list-style:none}
@@ -345,9 +345,8 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
     histEl.innerHTML='';
     drawn.forEach(function(nm,i){
       var li=document.createElement('li');if(i===drawn.length-1)li.className='last';
-      var b=document.createElement('i');b.textContent=String(i+1);
       var t=document.createElement('span');t.textContent=nm;
-      li.appendChild(b);li.appendChild(t);histEl.appendChild(li);
+      li.appendChild(t);histEl.appendChild(li);
     });
     boardEl.innerHTML='';
     roster.slice().sort(function(a,b){return a.localeCompare(b,'ca')}).forEach(function(nm){
@@ -363,9 +362,9 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
       boardEl.appendChild(li);
     });
     cLine.setAttribute('aria-pressed',claims.line!==null?'true':'false');
-    cLine.textContent=claims.line!==null?'Línia: al nom '+claims.line:'Línia: encara no';
+    cLine.textContent=claims.line!==null?'Línia: '+claims.line.name:'Línia: encara no';
     cBingo.setAttribute('aria-pressed',claims.bingo!==null?'true':'false');
-    cBingo.textContent=claims.bingo!==null?'Bingo: al nom '+claims.bingo:'Bingo: encara no';
+    cBingo.textContent=claims.bingo!==null?'Bingo: '+claims.bingo.name:'Bingo: encara no';
   }
   function toggleAbsent(nm){
     if(busy||drawn.indexOf(nm)>-1)return;
@@ -399,18 +398,18 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
   undoBtn.addEventListener('click',function(){
     if(busy||!drawn.length)return;
     var last=drawn.pop();remaining.push(last);
-    if(claims.line!==null&&claims.line>drawn.length)claims.line=null;
-    if(claims.bingo!==null&&claims.bingo>drawn.length)claims.bingo=null;
+    if(claims.line!==null&&claims.line.n>drawn.length)claims.line=null;
+    if(claims.bingo!==null&&claims.bingo.n>drawn.length)claims.bingo=null;
     nameEl.textContent=drawn.length?drawn[drawn.length-1]:'Preparats?';
     askEl.textContent=drawn.length?'Nom anterior recuperat.':"Busca aquest nom a la teva graella i ratlla'l.";
     drawBtn.textContent='Treu un nom';
     renderAll();
   });
   cLine.addEventListener('click',function(){
-    claims.line=claims.line===null?drawn.length:null;renderAll();
+    claims.line=claims.line===null?{n:drawn.length,name:drawn[drawn.length-1]||'—'}:null;renderAll();
   });
   cBingo.addEventListener('click',function(){
-    claims.bingo=claims.bingo===null?drawn.length:null;renderAll();
+    claims.bingo=claims.bingo===null?{n:drawn.length,name:drawn[drawn.length-1]||'—'}:null;renderAll();
   });
   document.addEventListener('keydown',function(e){
     if(p2.hidden)return;
