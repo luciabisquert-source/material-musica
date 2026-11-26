@@ -247,14 +247,9 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
     {k:'k-afi',name:'Aficions',items:["dibuixa o pinta","llegeix per gust","juga a videojocs","fa fotos o vídeos"]},
     {k:'k-gus',name:'Gustos',items:["la pizza és el seu menjar preferit","prefereix dolç que salat","prefereix l'estiu a l'hivern","prefereix els gossos als gats"]}
   ];
-  var ASKS=[
-    "Qui té aquest nom, que expliqui per quina frase l'han apuntat.",
-    "Qui té aquest nom, que digui una cosa que li agrada fer.",
-    "Qui té aquest nom, que digui quina cançó l'alegra.",
-    "Qui té aquest nom, que aixequi la mà i somrigui.",
-    "Qui té aquest nom, que expliqui quina afició té.",
-    "Qui té aquest nom, que digui quin esport li agrada mirar o fer."
-  ];
+  var ASKS=["Escoltes música cada dia?","Saps cantar una cançó en anglès sencera?","Toques o has tocat algun instrument?","Has anat a algun concert?","Practiques un esport en equip?","Jugues a futbol?","Fas ball o gimnàstica?","Has anat a veure un partit en directe?","Dibuixes o pintes?","Llegeixes per gust?","Jugues a videojocs?","Fas fotos o vídeos?","És la pizza el teu menjar preferit?","Prefereixes el dolç al salat?","Prefereixes l'estiu a l'hivern?","Prefereixes els gossos als gats?"];
+  var deck=[];
+  function nextAsk(){if(!deck.length){deck=ASKS.slice();for(var i=deck.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=deck[i];deck[i]=deck[j];deck[j]=t}}return deck.pop()}
   function $(id){return document.getElementById(id)}
 
   /* ---------- Pestanyes ---------- */
@@ -377,7 +372,7 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
   function finishDraw(nm){
     drawn.push(nm);
     nameEl.textContent=nm;
-    askEl.textContent=ASKS[Math.floor(Math.random()*ASKS.length)];
+    askEl.textContent='Pregunta per a '+nm+': '+nextAsk();
     if(remaining.length===0){drawBtn.textContent='Ja han sortit tots';}
     busy=false;renderAll();
   }
