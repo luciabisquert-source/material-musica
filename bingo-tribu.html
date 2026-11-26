@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bingo de la nostra tribu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: capçalera tribal; dues parts amb pestanyes grans. Part 1 = graella + normes + temps. Part 2 = nom cantat + tauler de la classe */
+  --page:#faf5ff;
+  --plum:#3a1850;
+  --coral:#f4553f;
+  --sun:#ffc531;
+  --teal:#0b9a86;
+  --pink:#d6336c;
+  --amber:#e09a00;
+  --card:#ffffff;
+  --display:'Bungee','Impact',sans-serif;
+  --body:'Rubik','Segoe UI',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--page);color:var(--plum);font-family:var(--body);font-size:18px;line-height:1.4;overflow-x:hidden}
+[hidden]{display:none!important}
+
+header{background:var(--coral);color:#fff;text-align:center;padding:26px 16px 36px;position:relative}
+header::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:repeating-linear-gradient(90deg,var(--sun) 0 30px,var(--plum) 30px 60px,var(--teal) 60px 90px,var(--pink) 90px 120px)}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18px;background:linear-gradient(135deg,var(--page) 25%,transparent 25%) -18px 0/36px 18px,linear-gradient(225deg,var(--page) 25%,transparent 25%) -18px 0/36px 18px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(2rem,6vw,3.8rem);line-height:1.05;margin:8px 0 0;text-wrap:balance;text-shadow:3px 3px 0 var(--plum)}
+header p{margin:10px 0 0;font-weight:700;font-size:1.1rem}
+
+.tabs{max-width:1280px;margin:22px auto 0;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tab{font:inherit;cursor:pointer;border:3px solid var(--plum);border-radius:6px 22px 6px 22px;background:#fff;color:var(--plum);padding:12px 16px;text-align:left;box-shadow:4px 4px 0 var(--plum);display:flex;flex-direction:column;gap:2px}
+.tab b{font-family:var(--display);font-weight:400;font-size:1.25rem}
+.tab span{font-weight:500;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--plum);color:#fff;box-shadow:4px 4px 0 var(--sun)}
+.tab:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+@media (max-width:560px){.tabs{grid-template-columns:1fr}}
+
+main{max-width:1280px;margin:0 auto;padding:22px 16px 40px}
+.two{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
+
+button.btn{font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:12px;padding:10px 20px;background:var(--plum);color:#fff;box-shadow:0 4px 0 #1c0a2a}
+button.btn:hover{background:#4f2669}
+button.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1c0a2a}
+button.btn:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+button.btn:disabled{opacity:.55;cursor:default}
+button.warm{background:var(--coral);box-shadow:0 4px 0 #a82f1e}
+button.warm:hover{background:#ff6a54}
+button.chip{font:inherit;font-weight:800;cursor:pointer;border:0;background:#fff;color:var(--plum);box-shadow:inset 0 0 0 2px var(--plum);padding:6px 14px;border-radius:999px}
+button.chip[aria-pressed="true"]{background:var(--plum);color:#fff}
+button.chip:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+h2.sec{font-family:var(--display);font-weight:400;font-size:1.8rem;margin:0 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;padding:0;list-style:none}
+.legend li{font-weight:800;font-size:.9rem;padding:4px 12px;border-radius:999px;color:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
+@media (max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cell{position:relative;background:var(--card);border:3px solid var(--c);border-radius:6px 22px 6px 22px;padding:36px 12px 14px;min-height:132px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;font-size:clamp(.98rem,1.6vw,1.25rem);text-wrap:balance;box-shadow:5px 5px 0 var(--c)}
+.cell .num{position:absolute;top:-3px;left:-3px;min-width:42px;height:34px;padding:0 8px;display:grid;place-items:center;border-radius:6px 0 14px 0;background:var(--c);color:var(--ct);font-family:var(--display);font-size:1.1rem}
+.cell .cat{position:absolute;top:6px;right:10px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.cell .lead{display:block;font-weight:500;font-size:.78em;opacity:.7;margin-bottom:3px}
+.k-mus{--c:var(--pink);--ct:#fff}
+.k-esp{--c:var(--teal);--ct:#fff}
+.k-afi{--c:var(--amber);--ct:var(--plum)}
+.k-gus{--c:var(--coral);--ct:#fff}
+
+aside{display:flex;flex-direction:column;gap:18px}
+.panel{background:#fff;border:3px solid var(--plum);border-radius:6px 22px 6px 22px;padding:18px 20px;box-shadow:5px 5px 0 var(--sun)}
+.panel h3{font-family:var(--display);font-weight:400;font-size:1.4rem;margin:0 0 10px;color:var(--coral)}
+.panel ol{margin:0;padding-left:1.3em;display:grid;gap:8px}
+.panel li::marker{font-weight:800;color:var(--coral)}
+.panel p{margin:0 0 8px}
+
+.timer{text-align:center}
+.timer .time{font-family:var(--display);font-size:clamp(3.2rem,8vw,5rem);line-height:1;font-variant-numeric:tabular-nums;margin:6px 0 12px}
+.timer.end{background:var(--coral);color:#fff;box-shadow:5px 5px 0 var(--plum)}
+.timer.end h3{color:#fff}
+.timer .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
+.timer .ctrl{display:flex;gap:10px;justify-content:center}
+.msg{margin:10px 0 0;font-weight:800;min-height:1.4em}
+.go2{margin-top:6px;width:100%}
+
+/* Part 2 */
+.stage{background:var(--plum);color:#fff;border-radius:6px 28px 6px 28px;padding:22px 20px 24px;text-align:center;box-shadow:6px 6px 0 var(--sun)}
+.stage .lab{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.9rem;color:var(--sun)}
+.stage .name{font-family:var(--display);font-size:clamp(2.2rem,7vw,5.2rem);line-height:1.05;min-height:1.15em;margin:10px 0 6px;overflow-wrap:anywhere;text-wrap:balance}
+.stage .ask{font-weight:500;min-height:1.5em;margin:0 0 14px;opacity:.9}
+.stage .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+.stage .count{font-weight:800}
+.claims{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;justify-content:center}
+.claim{font:inherit;font-weight:800;cursor:pointer;border:3px solid var(--sun);border-radius:999px;background:transparent;color:#fff;padding:6px 16px}
+.claim[aria-pressed="true"]{background:var(--sun);color:var(--plum)}
+.claim:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.hist{margin-top:18px}
+.hist h3{font-family:var(--display);font-weight:400;font-size:1.2rem;margin:0 0 8px}
+.hist ol{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.hist li{background:#fff;border:2px solid var(--plum);border-radius:999px;padding:2px 12px 2px 4px;font-weight:700;font-size:.95rem;display:flex;gap:6px;align-items:center}
+.hist li i{font-style:normal;background:var(--plum);color:#fff;border-radius:999px;min-width:24px;height:24px;display:grid;place-items:center;font-size:.8rem;padding:0 4px}
+.hist li.last{background:var(--sun)}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin:0;padding:0;list-style:none}
+.board li{border:2px solid #cdbbe0;border-radius:10px;padding:8px 6px;text-align:center;font-weight:700;font-size:.95rem;background:#fff;color:#8c7aa0;overflow-wrap:anywhere}
+.board li{cursor:pointer}
+.board li:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.board li.abs{background:#eee;border-style:dashed;color:#9a8fa6;text-decoration:line-through}
+.board li.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.board li.cur{background:var(--coral);border-color:var(--coral);color:#fff;transform:scale(1.04)}
+textarea{width:100%;min-height:170px;font:inherit;font-size:1rem;border:3px solid var(--plum);border-radius:12px;padding:10px;resize:vertical;color:var(--plum);background:#fff}
+textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+details.panel summary{cursor:pointer;font-family:var(--display);font-size:1.3rem;color:var(--coral);list-style:none}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:" +";}
+details.panel[open] summary::after{content:" \2013";}
+details.panel .body{margin-top:12px;display:grid;gap:10px}
+.small{font-size:.9rem;color:#5b4870;margin:0}
+@media (prefers-reduced-motion:no-preference){.board li{transition:background .2s,transform .2s}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Bingo de la nostra tribu</h1>
+  <p>2n ESO C · Primer ens coneixem, després juguem</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Parts del joc">
+  <button type="button" class="tab" role="tab" id="tab1" aria-selected="true" aria-controls="part1"><b>Part 1</b><span>Busca persones i omple la graella</span></button>
+  <button type="button" class="tab" role="tab" id="tab2" aria-selected="false" aria-controls="part2"><b>Part 2</b><span>Bingo de noms amb la teva graella</span></button>
+</div>
+
+<main>
+  <!-- PART 1 -->
+  <div class="two" id="part1" role="tabpanel" aria-labelledby="tab1">
+    <section aria-labelledby="gt">
+      <h2 class="sec" id="gt">Troba algú que…</h2>
+      <ul class="legend" aria-label="Categories">
+        <li style="background:var(--pink)">Música</li>
+        <li style="background:var(--teal)">Esports</li>
+        <li style="background:var(--amber);color:var(--plum)">Aficions</li>
+        <li style="background:var(--coral)">Gustos</li>
+      </ul>
+      <ol class="grid" id="grid"></ol>
+    </section>
+    <aside>
+      <section class="panel" aria-labelledby="r1">
+        <h3 id="r1">Com es juga</h3>
+        <ol>
+          <li>Agafa la teva targeta de bingo.</li>
+          <li>Aixeca't i pregunta. Quan algú compleix una frase, escriu-ne el nom a la casella.</li>
+          <li>Cada company només pot sortir <strong>una vegada</strong>.</li>
+          <li>Intenta preguntar a gent amb qui parles menys.</li>
+          <li>Omple les 16 caselles abans que s'acabi el temps.</li>
+        </ol>
+      </section>
+      <section class="panel" aria-labelledby="n1">
+        <h3 id="n1">Normes</h3>
+        <ol>
+          <li>Es camina i es parla baix.</li>
+          <li>Cadascú contesta el que vol. Si una frase no et va bé, passa a la següent.</li>
+          <li>Es respecten tots els gustos.</li>
+        </ol>
+      </section>
+      <section class="panel timer" id="timerPanel" aria-labelledby="tt">
+        <h3 id="tt">Temps</h3>
+        <div class="row" role="group" aria-label="Durada">
+          <button type="button" class="chip" data-min="8" aria-pressed="false">8 min</button>
+          <button type="button" class="chip" data-min="10" aria-pressed="false">10 min</button>
+          <button type="button" class="chip" data-min="15" aria-pressed="true">15 min</button>
+          <button type="button" class="chip" data-min="20" aria-pressed="false">20 min</button>
+        </div>
+        <div class="time" id="time" role="timer" aria-live="off">15:00</div>
+        <div class="ctrl">
+          <button type="button" id="start" class="btn warm">Comença</button>
+          <button type="button" id="reset" class="btn">Reinicia</button>
+        </div>
+        <p class="msg" id="msg"></p>
+        <button type="button" class="btn go2" id="go2">Passem a la Part 2</button>
+      </section>
+    </aside>
+  </div>
+
+  <!-- PART 2 -->
+  <div class="two" id="part2" role="tabpanel" aria-labelledby="tab2" hidden>
+    <section aria-labelledby="st">
+      <h2 class="sec" id="st">Bingo de noms</h2>
+      <div class="stage">
+        <div class="lab">Nom cantat</div>
+        <div class="name" id="name" aria-live="polite">Preparats?</div>
+        <p class="ask" id="ask">Busca aquest nom a la teva graella i ratlla'l.</p>
+        <div class="row">
+          <button type="button" class="btn warm" id="draw">Treu un nom</button>
+          <button type="button" class="btn" id="undo">Desfés l'últim</button>
+          <span class="count" id="count">0 de 0</span>
+        </div>
+        <div class="claims" role="group" aria-label="Premis">
+          <button type="button" class="claim" id="cLine" aria-pressed="false">Línia: encara no</button>
+          <button type="button" class="claim" id="cBingo" aria-pressed="false">Bingo: encara no</button>
+        </div>
+      </div>
+      <div class="hist">
+        <h3>Noms que ja han sortit</h3>
+        <ol id="hist"></ol>
+      </div>
+    </section>
+    <aside>
+      <section class="panel" aria-labelledby="r2">
+        <h3 id="r2">Com es juga</h3>
+        <ol>
+          <li>Usa la graella que has omplert a la Part 1.</li>
+          <li>Quan surt un nom, ratlla'l si el tens a la graella.</li>
+          <li><strong>Línia:</strong> 4 caselles ratllades seguides en una fila, una columna o una diagonal.</li>
+          <li><strong>Bingo:</strong> les 16 caselles ratllades.</li>
+          <li>Qui canta, ha d'esperar que es comprovi amb la llista de noms.</li>
+        </ol>
+      </section>
+      <section class="panel" aria-labelledby="b2">
+        <h3 id="b2">Tauler de la classe</h3>
+        <ul class="board" id="board"></ul>
+        <p class="small" style="margin-top:10px">En verd, els noms que ja han sortit. Serveix per comprovar una línia o un bingo.</p>
+        <p class="small" style="margin-top:6px"><strong>Absents:</strong> toca un nom per marcar-lo com a absent. Els absents no surten al bingo.</p>
+      </section>
+      <details class="panel" id="rosterBox">
+        <summary>Llista de la classe</summary>
+        <div class="body">
+          <p class="small">Un nom per línia (nom i primer cognom). Els noms es desen només en aquest navegador, no es publiquen enlloc.</p>
+          <label for="roster" class="small" style="font-weight:700">Noms</label>
+          <textarea id="roster" spellcheck="false"></textarea>
+          <button type="button" class="btn" id="saveRoster">Usa aquesta llista</button>
+          <p class="small" id="rosterMsg"></p>
+        </div>
+      </details>
+    </aside>
+  </div>
+</main>
+
+<script>
+(function(){
+  /* ---------- Dades ---------- */
+  var CATS=[
+    {k:'k-mus',name:'Música',items:["escolta música cada dia","sap cantar una cançó en anglès sencera","toca o ha tocat un instrument","ha anat a un concert"]},
+    {k:'k-esp',name:'Esports',items:["practica un esport en un equip","juga a futbol","fa ball o gimnàstica","ha anat a veure un partit en directe"]},
+    {k:'k-afi',name:'Aficions',items:["dibuixa o pinta","llegeix per gust","juga a videojocs","fa fotos o vídeos"]},
+    {k:'k-gus',name:'Gustos',items:["la pizza és el seu menjar preferit","prefereix dolç que salat","prefereix l'estiu a l'hivern","prefereix els gossos als gats"]}
+  ];
+  var ASKS=[
+    "Qui té aquest nom, que expliqui per quina frase l'han apuntat.",
+    "Qui té aquest nom, que digui una cosa que li agrada fer.",
+    "Qui té aquest nom, que digui quina cançó l'alegra.",
+    "Qui té aquest nom, que aixequi la mà i somrigui.",
+    "Qui té aquest nom, que expliqui quina afició té.",
+    "Qui té aquest nom, que digui quin esport li agrada mirar o fer."
+  ];
+  function $(id){return document.getElementById(id)}
+
+  /* ---------- Pestanyes ---------- */
+  var tab1=$('tab1'),tab2=$('tab2'),p1=$('part1'),p2=$('part2');
+  function showPart(n,push){
+    var two=n===2;
+    p1.hidden=two;p2.hidden=!two;
+    tab1.setAttribute('aria-selected',two?'false':'true');
+    tab2.setAttribute('aria-selected',two?'true':'false');
+    if(push){try{history.replaceState(null,'',two?'#part-2':'#part-1')}catch(e){}}
+  }
+  tab1.addEventListener('click',function(){showPart(1,true)});
+  tab2.addEventListener('click',function(){showPart(2,true)});
+  $('go2').addEventListener('click',function(){showPart(2,true);window.scrollTo(0,0)});
+  function fromHash(){showPart(location.hash==='#part-2'?2:1,false)}
+  window.addEventListener('hashchange',fromHash);fromHash();
+
+  /* ---------- Part 1: graella ---------- */
+  var grid=$('grid'),n=0;
+  CATS.forEach(function(c){
+    c.items.forEach(function(t){
+      n++;
+      var li=document.createElement('li');li.className='cell '+c.k;
+      var num=document.createElement('span');num.className='num';num.textContent=String(n);
+      var cat=document.createElement('span');cat.className='cat';cat.textContent=c.name;
+      var box=document.createElement('div');
+      var lead=document.createElement('span');lead.className='lead';lead.textContent='Algú que…';
+      var tx=document.createElement('span');tx.textContent=t;
+      box.appendChild(lead);box.appendChild(tx);
+      li.appendChild(num);li.appendChild(cat);li.appendChild(box);grid.appendChild(li);
+    });
+  });
+
+  /* ---------- Part 1: cronòmetre ---------- */
+  var minutes=15,left=minutes*60,iv=null;
+  var timeEl=$('time'),msg=$('msg'),panel=$('timerPanel'),startBtn=$('start');
+  function fmt(s){var m=Math.floor(s/60),r=s%60;return (m<10?'0':'')+m+':'+(r<10?'0':'')+r}
+  function show(){timeEl.textContent=fmt(left)}
+  function stop(){if(iv){clearInterval(iv);iv=null}startBtn.textContent='Comença'}
+  function reset(){stop();left=minutes*60;panel.classList.remove('end');msg.textContent='';show()}
+  startBtn.addEventListener('click',function(){
+    if(iv){stop();startBtn.textContent='Continua';return}
+    if(left<=0)reset();
+    panel.classList.remove('end');msg.textContent='';
+    startBtn.textContent='Pausa';
+    iv=setInterval(function(){
+      left--;show();
+      if(left<=0){stop();panel.classList.add('end');msg.textContent="S'ha acabat el temps. Tots als vostres llocs!"}
+    },1000);
+  });
+  $('reset').addEventListener('click',reset);
+  var chips=document.querySelectorAll('.chip');
+  Array.prototype.forEach.call(chips,function(b){
+    b.addEventListener('click',function(){
+      minutes=parseInt(b.getAttribute('data-min'),10);
+      Array.prototype.forEach.call(chips,function(c){c.setAttribute('aria-pressed',c===b?'true':'false')});
+      reset();
+    });
+  });
+
+  /* ---------- Part 2: bingo de noms ---------- */
+  var KEY='bingo-tribu-roster-v2';
+  var DEFAULT=[];for(var i=1;i<=24;i++)DEFAULT.push('Alumne '+i);
+  var roster=DEFAULT.slice(),usingDefault=true;
+  try{var saved=localStorage.getItem(KEY);if(saved){var arr=JSON.parse(saved);if(arr&&arr.length){roster=arr;usingDefault=false}}}catch(e){}
+  /* Absents: només per al dia actual */
+  var AKEY='bingo-tribu-absents';
+  function today(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+  var absent={};
+  try{var sa=JSON.parse(localStorage.getItem(AKEY)||'null');if(sa&&sa.date===today()){absent={};sa.list.forEach(function(x){absent[x]=1})}}catch(e){}
+  function saveAbsent(){try{localStorage.setItem(AKEY,JSON.stringify({date:today(),list:Object.keys(absent)}))}catch(e){}}
+  function present(){return roster.filter(function(x){return !absent[x]})}
+  var remaining=[],drawn=[],busy=false,claims={line:null,bingo:null};
+  var nameEl=$('name'),askEl=$('ask'),countEl=$('count'),histEl=$('hist'),boardEl=$('board');
+  var drawBtn=$('draw'),undoBtn=$('undo'),cLine=$('cLine'),cBingo=$('cBingo');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resetGame(){
+    remaining=present();drawn=[];claims={line:null,bingo:null};
+    nameEl.textContent='Preparats?';askEl.textContent="Busca aquest nom a la teva graella i ratlla'l.";
+    drawBtn.textContent='Treu un nom';
+    renderAll();
+  }
+  function renderAll(){
+    countEl.textContent=drawn.length+' de '+present().length+' presents';
+    drawBtn.disabled=remaining.length===0;
+    undoBtn.disabled=drawn.length===0;
+    histEl.innerHTML='';
+    drawn.forEach(function(nm,i){
+      var li=document.createElement('li');if(i===drawn.length-1)li.className='last';
+      var b=document.createElement('i');b.textContent=String(i+1);
+      var t=document.createElement('span');t.textContent=nm;
+      li.appendChild(b);li.appendChild(t);histEl.appendChild(li);
+    });
+    boardEl.innerHTML='';
+    roster.slice().sort(function(a,b){return a.localeCompare(b,'ca')}).forEach(function(nm){
+      var li=document.createElement('li');li.textContent=nm;
+      var idx=drawn.indexOf(nm);
+      if(idx>-1)li.className=(idx===drawn.length-1)?'cur':'on';
+      else if(absent[nm])li.className='abs';
+      li.tabIndex=0;li.setAttribute('role','button');
+      li.setAttribute('aria-pressed',absent[nm]?'true':'false');
+      li.title=absent[nm]?'Absent. Toca per marcar-lo com a present.':'Toca per marcar-lo com a absent.';
+      li.addEventListener('click',function(){toggleAbsent(nm)});
+      li.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleAbsent(nm)}});
+      boardEl.appendChild(li);
+    });
+    cLine.setAttribute('aria-pressed',claims.line!==null?'true':'false');
+    cLine.textContent=claims.line!==null?'Línia: al nom '+claims.line:'Línia: encara no';
+    cBingo.setAttribute('aria-pressed',claims.bingo!==null?'true':'false');
+    cBingo.textContent=claims.bingo!==null?'Bingo: al nom '+claims.bingo:'Bingo: encara no';
+  }
+  function toggleAbsent(nm){
+    if(busy||drawn.indexOf(nm)>-1)return;
+    if(absent[nm])delete absent[nm];else absent[nm]=1;
+    saveAbsent();
+    remaining=present().filter(function(x){return drawn.indexOf(x)<0});
+    drawBtn.textContent=remaining.length?'Treu un nom':'Ja han sortit tots';
+    renderAll();
+  }
+  function finishDraw(nm){
+    drawn.push(nm);
+    nameEl.textContent=nm;
+    askEl.textContent=ASKS[Math.floor(Math.random()*ASKS.length)];
+    if(remaining.length===0){drawBtn.textContent='Ja han sortit tots';}
+    busy=false;renderAll();
+  }
+  function draw(){
+    if(busy||remaining.length===0)return;
+    var k=Math.floor(Math.random()*remaining.length);
+    var pick=remaining.splice(k,1)[0];
+    if(reduce){finishDraw(pick);return}
+    busy=true;drawBtn.disabled=true;
+    var pool=present(),ticks=0;
+    var t=setInterval(function(){
+      nameEl.textContent=pool[Math.floor(Math.random()*pool.length)];
+      ticks++;
+      if(ticks>=14){clearInterval(t);finishDraw(pick)}
+    },80);
+  }
+  drawBtn.addEventListener('click',draw);
+  undoBtn.addEventListener('click',function(){
+    if(busy||!drawn.length)return;
+    var last=drawn.pop();remaining.push(last);
+    if(claims.line!==null&&claims.line>drawn.length)claims.line=null;
+    if(claims.bingo!==null&&claims.bingo>drawn.length)claims.bingo=null;
+    nameEl.textContent=drawn.length?drawn[drawn.length-1]:'Preparats?';
+    askEl.textContent=drawn.length?'Nom anterior recuperat.':"Busca aquest nom a la teva graella i ratlla'l.";
+    drawBtn.textContent='Treu un nom';
+    renderAll();
+  });
+  cLine.addEventListener('click',function(){
+    claims.line=claims.line===null?drawn.length:null;renderAll();
+  });
+  cBingo.addEventListener('click',function(){
+    claims.bingo=claims.bingo===null?drawn.length:null;renderAll();
+  });
+  document.addEventListener('keydown',function(e){
+    if(p2.hidden)return;
+    var tag=(e.target&&e.target.tagName)||'';
+    if(e.code==='Space'&&tag!=='TEXTAREA'&&tag!=='BUTTON'&&tag!=='SUMMARY'){e.preventDefault();draw()}
+  });
+
+  /* Llista de la classe */
+  var ta=$('roster'),rbox=$('rosterBox'),rmsg=$('rosterMsg');
+  ta.value=roster.join('\n');
+  if(usingDefault)rbox.open=true;
+  if(usingDefault)rbox.open=true;
+  rmsg.textContent=usingDefault?'Ara hi ha noms d\u2019exemple (Alumne 1 a 24). Enganxa-hi els noms de la classe, un per línia, i prem «Usa aquesta llista». Es desa només en aquest navegador.':'Llista desada en aquest navegador.';
+  $('saveRoster').addEventListener('click',function(){
+    var seen={},list=[];
+    ta.value.split(/\r?\n/).forEach(function(l){
+      var s=l.replace(/\s+/g,' ').trim();
+      if(s&&!seen[s]){seen[s]=1;list.push(s)}
+    });
+    if(list.length<2){rmsg.textContent='Escriu almenys dos noms, un per línia.';return}
+    roster=list;usingDefault=false;
+    try{localStorage.setItem(KEY,JSON.stringify(roster))}catch(e){}
+    ta.value=roster.join('\n');
+    rmsg.textContent='Llista desada: '+roster.length+' noms. Joc reiniciat.';
+    resetGame();
+  });
+  resetGame();
+})();
+</script>
+</body>
+</html>
