@@ -91,7 +91,13 @@ aside{display:flex;flex-direction:column;gap:18px}
 .stage{background:var(--plum);color:#fff;border-radius:6px 28px 6px 28px;padding:22px 20px 24px;text-align:center;box-shadow:6px 6px 0 var(--sun)}
 .stage .lab{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.9rem;color:var(--sun)}
 .stage .name{font-family:var(--display);font-size:clamp(2.2rem,7vw,5.2rem);line-height:1.05;min-height:1.15em;margin:10px 0 6px;overflow-wrap:anywhere;text-wrap:balance}
-.stage .ask{font-weight:500;min-height:1.5em;margin:0 0 14px;opacity:.9}
+.stage .ask{font-family:var(--display);font-size:clamp(1.3rem,3.4vw,2.2rem);line-height:1.15;min-height:1.2em;margin:0 0 8px;color:var(--sun);text-wrap:balance}
+.stage .rule{font-weight:500;min-height:1.4em;margin:0 0 14px;opacity:.92}
+select{width:100%;font:inherit;font-size:1rem;border:3px solid var(--plum);border-radius:10px;padding:8px;color:var(--plum);background:#fff}
+select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.chk{font-weight:800;margin:6px 0 0;min-height:1.4em}
+.chk.yes{color:var(--teal)}
+.chk.no{color:var(--coral)}
 .stage .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
 .stage .count{font-weight:800}
 .claims{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;justify-content:center}
@@ -191,19 +197,20 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
       <div class="stage">
         <div class="lab">Nom cantat</div>
         <div class="name" id="name" aria-live="polite">Preparats?</div>
-        <p class="ask" id="ask">Busca aquest nom a la teva graella i ratlla'l.</p>
+        <p class="ask" id="ask">Busca la teva graella. Quan surti un nom, mira la pregunta.</p>
+        <p class="rule" id="rule"></p>
         <div class="row">
-          <button type="button" class="btn warm" id="draw">Treu un nom</button>
+          <button type="button" class="btn warm" id="draw">Treu una pregunta</button>
           <button type="button" class="btn" id="undo">Desfés l'últim</button>
-          <span class="count" id="count">0 de 0</span>
+          <span class="count" id="count">0 preguntes fetes</span>
         </div>
         <div class="claims" role="group" aria-label="Premis">
-          <button type="button" class="claim" id="cLine" aria-pressed="false">Línia: encara no</button>
-          <button type="button" class="claim" id="cBingo" aria-pressed="false">Bingo: encara no</button>
+          <button type="button" class="claim" id="cLine" aria-pressed="false">Primera línia: encara no</button>
+          <button type="button" class="claim" id="cBingo" aria-pressed="false">Segona línia: encara no</button>
         </div>
       </div>
       <div class="hist">
-        <h3>Noms que ja han sortit</h3>
+        <h3>Preguntes que ja han sortit</h3>
         <ol id="hist"></ol>
       </div>
     </section>
@@ -212,17 +219,27 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
         <h3 id="r2">Com es juga</h3>
         <ol>
           <li>Usa la graella que has omplert a la Part 1.</li>
-          <li>Quan surt un nom, ratlla'l si el tens a la graella.</li>
+          <li>Surt un <strong>nom</strong> amb una <strong>pregunta</strong>. Cada pregunta és la frase d'una casella.</li>
+          <li>Ratlla una casella <strong>només si hi tens escrit aquest nom</strong> a la casella d'aquesta frase.</li>
           <li><strong>Línia:</strong> 4 caselles ratllades seguides en una fila, una columna o una diagonal.</li>
-          <li><strong>Bingo:</strong> les 16 caselles ratllades.</li>
-          <li>Qui canta, ha d'esperar que es comprovi amb la llista de noms.</li>
+          <li>Qui canta línia ha d'esperar que es comprovi cada casella.</li>
         </ol>
       </section>
       <section class="panel" aria-labelledby="b2">
         <h3 id="b2">Tauler de la classe</h3>
         <ul class="board" id="board"></ul>
-        <p class="small" style="margin-top:10px">En verd, els noms que ja han sortit. Serveix per comprovar una línia o un bingo.</p>
+        <p class="small" style="margin-top:10px">En verd, els companys que ja han sortit. El de color coral és l'últim.</p>
         <p class="small" style="margin-top:6px"><strong>Absents:</strong> toca un nom per marcar-lo com a absent. Els absents no surten al bingo.</p>
+      </section>
+            <section class="panel" aria-labelledby="ck2">
+        <h3 id="ck2">Comprova una casella</h3>
+        <p class="small">Quan algú canta línia, comprova cada casella: tria el nom i la frase de la casella.</p>
+        <label for="chkName" class="small" style="font-weight:700">Nom escrit</label>
+        <select id="chkName"></select>
+        <label for="chkPhr" class="small" style="font-weight:700">Frase de la casella</label>
+        <select id="chkPhr"></select>
+        <button type="button" class="btn" id="chkBtn">Comprova</button>
+        <p class="chk" id="chkOut" aria-live="polite"></p>
       </section>
       <details class="panel" id="rosterBox">
         <summary>Llista de la classe</summary>
@@ -322,32 +339,56 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
   try{var sa=JSON.parse(localStorage.getItem(AKEY)||'null');if(sa&&sa.date===today()){absent={};sa.list.forEach(function(x){absent[x]=1})}}catch(e){}
   function saveAbsent(){try{localStorage.setItem(AKEY,JSON.stringify({date:today(),list:Object.keys(absent)}))}catch(e){}}
   function present(){return roster.filter(function(x){return !absent[x]})}
+  var PH=[];CATS.forEach(function(c){c.items.forEach(function(t){PH.push(t)})});
   var remaining=[],drawn=[],busy=false,claims={line:null,bingo:null};
-  var nameEl=$('name'),askEl=$('ask'),countEl=$('count'),histEl=$('hist'),boardEl=$('board');
+  var nameEl=$('name'),askEl=$('ask'),ruleEl=$('rule'),countEl=$('count'),histEl=$('hist'),boardEl=$('board');
   var drawBtn=$('draw'),undoBtn=$('undo'),cLine=$('cLine'),cBingo=$('cBingo');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
+  var START_ASK='Busca la teva graella. Quan surti un nom, mira la pregunta.';
+  function key(n,p){return n+'|'+p}
+  function pairsLeft(){
+    var done={};drawn.forEach(function(d){done[key(d.n,d.p)]=1});
+    var out=[];
+    present().forEach(function(n){for(var p=0;p<PH.length;p++){if(!done[key(n,p)])out.push({n:n,p:p})}});
+    return out;
+  }
+  function hasDrawn(nm){return drawn.some(function(d){return d.n===nm})}
+  function showCurrent(){
+    if(!drawn.length){nameEl.textContent='Preparats?';askEl.textContent=START_ASK;ruleEl.textContent='';return}
+    var d=drawn[drawn.length-1];
+    nameEl.textContent=d.n;askEl.textContent=ASKS[d.p];
+    ruleEl.textContent='Ratlla la casella «'+PH[d.p]+'» només si hi tens escrit '+d.n+'.';
+  }
+  function fillCheck(){
+    var sn=$('chkName'),sp=$('chkPhr');
+    sn.innerHTML='';sp.innerHTML='';
+    roster.slice().sort(function(a,b){return a.localeCompare(b,'ca')}).forEach(function(nm){
+      var o=document.createElement('option');o.value=nm;o.textContent=nm;sn.appendChild(o)});
+    PH.forEach(function(t,i){var o=document.createElement('option');o.value=String(i);o.textContent=t;sp.appendChild(o)});
+    $('chkOut').textContent='';
+  }
   function resetGame(){
-    remaining=present();drawn=[];claims={line:null,bingo:null};
-    nameEl.textContent='Preparats?';askEl.textContent="Busca aquest nom a la teva graella i ratlla'l.";
-    drawBtn.textContent='Treu un nom';
-    renderAll();
+    drawn=[];remaining=pairsLeft();claims={line:null,bingo:null};
+    showCurrent();
+    drawBtn.textContent='Treu una pregunta';
+    fillCheck();renderAll();
   }
   function renderAll(){
-    countEl.textContent=drawn.length+' de '+present().length+' presents';
+    countEl.textContent=drawn.length+' preguntes fetes';
     drawBtn.disabled=remaining.length===0;
     undoBtn.disabled=drawn.length===0;
     histEl.innerHTML='';
-    drawn.forEach(function(nm,i){
+    drawn.forEach(function(d,i){
       var li=document.createElement('li');if(i===drawn.length-1)li.className='last';
-      var t=document.createElement('span');t.textContent=nm;
+      var t=document.createElement('span');t.textContent=d.n+' · '+PH[d.p];
       li.appendChild(t);histEl.appendChild(li);
     });
     boardEl.innerHTML='';
+    var lastName=drawn.length?drawn[drawn.length-1].n:null;
     roster.slice().sort(function(a,b){return a.localeCompare(b,'ca')}).forEach(function(nm){
       var li=document.createElement('li');li.textContent=nm;
-      var idx=drawn.indexOf(nm);
-      if(idx>-1)li.className=(idx===drawn.length-1)?'cur':'on';
+      if(nm===lastName)li.className='cur';
+      else if(hasDrawn(nm))li.className='on';
       else if(absent[nm])li.className='abs';
       li.tabIndex=0;li.setAttribute('role','button');
       li.setAttribute('aria-pressed',absent[nm]?'true':'false');
@@ -357,23 +398,22 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
       boardEl.appendChild(li);
     });
     cLine.setAttribute('aria-pressed',claims.line!==null?'true':'false');
-    cLine.textContent=claims.line!==null?'Línia: '+claims.line.name:'Línia: encara no';
+    cLine.textContent=claims.line!==null?'Primera línia: '+claims.line.name:'Primera línia: encara no';
     cBingo.setAttribute('aria-pressed',claims.bingo!==null?'true':'false');
-    cBingo.textContent=claims.bingo!==null?'Bingo: '+claims.bingo.name:'Bingo: encara no';
+    cBingo.textContent=claims.bingo!==null?'Segona línia: '+claims.bingo.name:'Segona línia: encara no';
   }
   function toggleAbsent(nm){
-    if(busy||drawn.indexOf(nm)>-1)return;
+    if(busy||hasDrawn(nm))return;
     if(absent[nm])delete absent[nm];else absent[nm]=1;
     saveAbsent();
-    remaining=present().filter(function(x){return drawn.indexOf(x)<0});
-    drawBtn.textContent=remaining.length?'Treu un nom':'Ja han sortit tots';
+    remaining=pairsLeft();
+    drawBtn.textContent=remaining.length?'Treu una pregunta':'Ja han sortit totes';
     renderAll();
   }
-  function finishDraw(nm){
-    drawn.push(nm);
-    nameEl.textContent=nm;
-    askEl.textContent='Pregunta per a '+nm+': '+nextAsk();
-    if(remaining.length===0){drawBtn.textContent='Ja han sortit tots';}
+  function finishDraw(pair){
+    drawn.push(pair);
+    showCurrent();
+    if(remaining.length===0){drawBtn.textContent='Ja han sortit totes';}
     busy=false;renderAll();
   }
   function draw(){
@@ -385,8 +425,9 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
     var pool=present(),ticks=0;
     var t=setInterval(function(){
       nameEl.textContent=pool[Math.floor(Math.random()*pool.length)];
+      askEl.textContent='';ruleEl.textContent='';
       ticks++;
-      if(ticks>=14){clearInterval(t);finishDraw(pick)}
+      if(ticks>=12){clearInterval(t);finishDraw(pick)}
     },80);
   }
   drawBtn.addEventListener('click',draw);
@@ -395,21 +436,27 @@ details.panel .body{margin-top:12px;display:grid;gap:10px}
     var last=drawn.pop();remaining.push(last);
     if(claims.line!==null&&claims.line.n>drawn.length)claims.line=null;
     if(claims.bingo!==null&&claims.bingo.n>drawn.length)claims.bingo=null;
-    nameEl.textContent=drawn.length?drawn[drawn.length-1]:'Preparats?';
-    askEl.textContent=drawn.length?'Nom anterior recuperat.':"Busca aquest nom a la teva graella i ratlla'l.";
-    drawBtn.textContent='Treu un nom';
+    showCurrent();
+    drawBtn.textContent='Treu una pregunta';
     renderAll();
   });
   cLine.addEventListener('click',function(){
-    claims.line=claims.line===null?{n:drawn.length,name:drawn[drawn.length-1]||'—'}:null;renderAll();
+    claims.line=claims.line===null?{n:drawn.length,name:drawn.length?drawn[drawn.length-1].n:'—'}:null;renderAll();
   });
   cBingo.addEventListener('click',function(){
-    claims.bingo=claims.bingo===null?{n:drawn.length,name:drawn[drawn.length-1]||'—'}:null;renderAll();
+    claims.bingo=claims.bingo===null?{n:drawn.length,name:drawn.length?drawn[drawn.length-1].n:'—'}:null;renderAll();
+  });
+  $('chkBtn').addEventListener('click',function(){
+    var n=$('chkName').value,p=parseInt($('chkPhr').value,10),at=-1;
+    drawn.forEach(function(d,k){if(d.n===n&&d.p===p)at=k});
+    var out=$('chkOut');
+    out.textContent=at>-1?'Sí. Aquesta parella va sortir a la pregunta '+(at+1)+'.':'No. Aquesta parella encara no ha sortit.';
+    out.className='chk '+(at>-1?'yes':'no');
   });
   document.addEventListener('keydown',function(e){
     if(p2.hidden)return;
     var tag=(e.target&&e.target.tagName)||'';
-    if(e.code==='Space'&&tag!=='TEXTAREA'&&tag!=='BUTTON'&&tag!=='SUMMARY'){e.preventDefault();draw()}
+    if(e.code==='Space'&&tag!=='TEXTAREA'&&tag!=='BUTTON'&&tag!=='SUMMARY'&&tag!=='SELECT'){e.preventDefault();draw()}
   });
 
   /* Llista de la classe */
