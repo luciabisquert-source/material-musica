@@ -134,7 +134,7 @@ h2{font-size:30px}
 .hi{font-family:var(--display);font-weight:700;font-size:44px;line-height:1}
 .hi .fr{font-size:.45em}
 .go{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;max-width:460px;padding:16px 20px;background:var(--orange);box-shadow:0 7px 0 var(--ink);animation:bob 1.8s ease-in-out infinite}
-.go .gt{font-size:34px;line-height:1.1}
+.go .gt{font-size:34px;line-height:1.1}.go .gt .fr{color:var(--ink);opacity:.85;font-size:.45em}
 .go .gs{font-size:17px;font-weight:600}
 .go .gs .fr{color:var(--ink);opacity:.85}
 @keyframes bob{50%{transform:translateY(-4px)}}
@@ -352,7 +352,7 @@ function home(){
   const g=globalNext(),begun=started();
   view(`<div class="hello">
     <div class="hi">${T('Hola!','Bonjour !')}</div>
-    ${g?`<button class="btn go" data-act="step" data-cat="${g.cat}" data-mode="${g.mode}"><span class="gt">${begun?T('Continua','Continue'):T('Comença','Commence')} →</span><span class="gs">${CATS[g.cat].ca} · ${MLAB[g.mode][0]}<span class="fr">${CATS[g.cat].fr} · ${MLAB[g.mode][1]}</span></span></button>`
+    ${g?`<button class="btn go" data-act="step" data-cat="${g.cat}" data-mode="${g.mode}"><span class="gt">${begun?'Continua':'Comença'} →<span class="fr">${begun?'Continue':'Commence'}</span></span><span class="gs">${CATS[g.cat].ca} · ${MLAB[g.mode][0]}<span class="fr">${CATS[g.cat].fr} · ${MLAB[g.mode][1]}</span></span></button>`
     :`<div class="msg good">${T('Fantàstic! Ho has fet tot.','Fantastique ! Tu as tout fait.')}</div>`}
   </div>
   <div class="how" aria-label="Com funciona">
@@ -364,7 +364,7 @@ function home(){
       ${g&&g.cat===id?`<span class="tag">${T('Aquí','Ici')}</span>`:''}
       <div class="art">${D[CAT_SAMPLE[id]]()}</div>
       <div class="name">${T(CATS[id].ca,CATS[id].fr)}</div>
-      ${starsHTML(catStars(id),12)}
+      <span class="stars" aria-label="${catStars(id)} de 12 estrelles">★ ${catStars(id)} / 12</span>
     </button>`).join('')}</div>`);
 }
 
